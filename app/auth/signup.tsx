@@ -14,10 +14,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Feather } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import Toast from "react-native-root-toast";
 
 const FormSchema = Yup.object().shape({
+  firstName: Yup.string().required("First Name is required"),
+  lastName: Yup.string().required("Last Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string().required("Please enter your password.").min(6),
   confirmPassword: Yup.string()
@@ -31,22 +33,25 @@ const SignUpScreen = () => {
   const [showPassword, setShowPassword] = useState<boolean>(true);
 
   const handleSubmit = async (val: any) => {
-    const { email, password } = val;
+    const { email, password, firstName, lastName } = val;
 
     setLoading(true);
     try {
-      console.log("heerree");
       const response = await axios({
         url: "http://192.168.213.241:2000/auth/signup",
         method: "POST",
-        data: { email, password, role: route.role },
+        data: { firstName, lastName, email, password, role: route.role },
       });
 
       setLoading(false);
       const data = response.data;
-      Toast.show(data, { backgroundColor: "green", textColor: "white" });
-      console.log(data, "dataaa");
-      router.push("auth/login");
+      if (data) {
+        Toast.show(data.message, {
+          backgroundColor: "green",
+          textColor: "white",
+        });
+        router.push("auth/login");
+      }
     } catch (error: any) {
       console.log(error);
       setLoading(false);
@@ -66,7 +71,13 @@ const SignUpScreen = () => {
             />
             <>
               <Formik
-                initialValues={{ email: "", password: "", confirmPassword: "" }}
+                initialValues={{
+                  firstName: "",
+                  lastName: "",
+                  email: "",
+                  password: "",
+                  confirmPassword: "",
+                }}
                 validationSchema={FormSchema}
                 onSubmit={handleSubmit}
               >
@@ -78,6 +89,24 @@ const SignUpScreen = () => {
                   errors,
                 }) => (
                   <View>
+                    <Text className="my-2">First Name</Text>
+                    <TextInput
+                      className={"border p-2 mb-4 rounded-md border-gray-200"}
+                      placeholder="First Name"
+                      value={values.firstName}
+                      onBlur={handleBlur("firstName")}
+                      onChangeText={handleChange("firstName")}
+                    />
+                    <Text className="text-red-500">{errors.firstName}</Text>
+                    <Text className="">Last Name</Text>
+                    <TextInput
+                      className={"border p-2 mb-4 rounded-md border-gray-200"}
+                      placeholder="Last Name"
+                      value={values.lastName}
+                      onBlur={handleBlur("lastName")}
+                      onChangeText={handleChange("lastName")}
+                    />
+                    <Text className="text-red-500">{errors.lastName}</Text>
                     <Text className="my-2">Email</Text>
                     <TextInput
                       className={"border p-2 mb-4 rounded-md border-gray-200"}
@@ -115,7 +144,7 @@ const SignUpScreen = () => {
                       </View>
                     </View>
                     <View className="relative">
-                      <Text className="my-2">Confirm Password</Text>
+                      <Text className="">Confirm Password</Text>
                       <TextInput
                         className={"border p-2 mb-4 rounded-md border-gray-200"}
                         placeholder="Password"
@@ -152,6 +181,13 @@ const SignUpScreen = () => {
                         {loading ? "Loading..." : "Sign Up"}
                       </Text>
                     </TouchableOpacity>
+
+                    <View className="flex flex-row justify-center my-3 gap-2 items-center">
+                      <Text>Already signed up?</Text>
+                      <Link href={"auth/login"} className="text-blue-800">
+                        <Text>Login</Text>
+                      </Link>
+                    </View>
                   </View>
                 )}
               </Formik>

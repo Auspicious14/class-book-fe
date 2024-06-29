@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   Alert,
   TouchableOpacity,
   Image,
@@ -15,7 +14,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Feather } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { Link, router } from "expo-router";
+import Toast from "react-native-root-toast";
 
 const FormSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email"),
@@ -23,9 +23,8 @@ const FormSchema = Yup.object().shape({
 });
 
 const LoginScreen = () => {
-  const route = useLocalSearchParams();
   const [loading, setLoading] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(true);
 
   const handleSubmit = async (val: any) => {
     const { email, password } = val;
@@ -35,18 +34,28 @@ const LoginScreen = () => {
       const response = await axios({
         url: "http://192.168.213.241:2000/auth/login",
         method: "POST",
-        data: { email, password, role: route.role },
+        data: { email, password },
       });
 
       setLoading(false);
 
-      if (response.status !== 200) {
-        throw new Error("Invalid login credentials");
-      }
       const data = await response.data;
-      console.log(data);
-      AsyncStorage.setItem("token", data.token);
-      data?.data?.role == "classRep" ? router.push("booking") : "";
+
+      if (data.message) {
+        Toast.show(data?.message, {
+          backgroundColor: "green",
+          textColor: "white",
+        });
+      }
+
+      if (data.token) {
+        await AsyncStorage.setItem("token", data.token);
+        data?.data?.role === "classRep"
+          ? router.push("hall/book")
+          : data?.data?.role === "admin"
+          ? router.push("hall/create")
+          : router.push("profile");
+      }
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }
@@ -65,7 +74,7 @@ const LoginScreen = () => {
           validationSchema={FormSchema}
           onSubmit={handleSubmit}
         >
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
+          {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
             <View>
               <Text className="my-2">Email</Text>
               <TextInput
@@ -75,6 +84,7 @@ const LoginScreen = () => {
                 onBlur={handleBlur("email")}
                 onChangeText={handleChange("email")}
               />
+              <Text className="text-red-500">{errors.email}</Text>
               <View className="relative">
                 <Text className="my-2">Password</Text>
                 <TextInput
@@ -85,6 +95,7 @@ const LoginScreen = () => {
                   onChangeText={handleChange("password")}
                   secureTextEntry={showPassword}
                 />
+                <Text className="text-red-500">{errors.password}</Text>
                 <View className="absolute top-12 right-4 ">
                   {showPassword ? (
                     <Feather
@@ -110,6 +121,12 @@ const LoginScreen = () => {
                   {loading ? "Loading..." : "Login"}
                 </Text>
               </TouchableOpacity>
+              <View className="flex flex-row justify-center my-3 gap-2 items-center">
+                <Text>Already signed up?</Text>
+                <Link href={"auth/signup"} className="text-blue-800">
+                  <Text>Login</Text>
+                </Link>
+              </View>
             </View>
           )}
         </Formik>

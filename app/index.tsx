@@ -15,6 +15,17 @@ const HomeScreen = () => {
         </View>
         <View className="flex flex-row gap-16 items-center justify-center">
           <View className="flex flex-col justify-center items-center">
+            <Link href={{ pathname: "auth/signup", params: { role: "admin" } }}>
+              <View className="border rounded-xl p-4 border-white w-20 h-20 flex justify-center items-center">
+                <Image
+                  source={require("../assets/images/admin.png")}
+                  className="w-20 h-20 object-cover rounded-xl"
+                />
+              </View>
+            </Link>
+            <Text className="text-white mt-2">Admin</Text>
+          </View>
+          <View className="flex flex-col justify-center items-center">
             <Link
               href={{ pathname: "auth/signup", params: { role: "classRep" } }}
             >
