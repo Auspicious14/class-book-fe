@@ -1,6 +1,8 @@
-# Welcome to your Expo app 👋
+# Welcome to my Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Class Book-FE is a mobile app system that allows class representatives to book lecture halls for a period of time whistle students get email notifications about the booked hall.
+
+
 
 ## Get started
 
