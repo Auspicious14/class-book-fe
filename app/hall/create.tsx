@@ -6,6 +6,8 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
+import { useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required("Hall Name is required"),
@@ -13,6 +15,7 @@ const FormSchema = Yup.object().shape({
 });
 
 const CreateHallScreen = () => {
+  const navigation: any = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
 
@@ -31,7 +34,7 @@ const CreateHallScreen = () => {
     fetchToken();
   }, [token]);
 
-  const handleSubmit = async (val: any) => {
+  const handleSubmit = async (val: any, actions: any) => {
     const { name, location } = val;
     setLoading(true);
     try {
@@ -54,6 +57,13 @@ const CreateHallScreen = () => {
           backgroundColor: "green",
           textColor: "white",
         });
+      }
+
+      if (data.data) {
+        actions.resetForm({
+          values: { name: "", location: "" },
+        });
+        router.push("hall/halls");
       }
     } catch (error: any) {
       Toast.show(error?.message, {

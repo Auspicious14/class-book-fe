@@ -16,15 +16,19 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 const BookingScreen: React.FC = () => {
   const [lectureHalls, setLectureHalls] = useState([] as any);
   const [selectedHall, setSelectedHall] = useState({} as any);
-  const [time, setTime] = useState("");
-  const [date, setDate] = useState<Date>(new Date());
-  const [show, setShow] = useState<boolean>(false);
+  const [time, setTime] = useState<Date>(new Date());
+  const [bookedFrom, setBookedFrom] = useState<Date>(new Date());
+  const [bookedTo, setBookedTo] = useState<Date>(new Date());
+  const [show, setShow] = useState<{
+    show: boolean;
+    type?: "time" | "bookedFrom" | "bookedTo";
+  }>({ show: false });
   const [loading, setLoading] = useState<boolean>(false);
 
   const token = AsyncStorage.getItem("token");
   const fetchLectureHalls = async () => {
     try {
-      const response = await axios("http://192.168.213.241:2000/halls");
+      const response = await axios("http://192.168.25.241:2000/halls");
       const data = await response.data?.data;
       setLectureHalls(data);
     } catch (error) {
@@ -70,49 +74,75 @@ const BookingScreen: React.FC = () => {
         )}
       />
       <Formik
-        initialValues={{ name: "", location: "", bookedUntil: "" }}
+        initialValues={{ duration: "", bookedFrom: "", bookedTo: "" }}
         validationSchema={""}
         onSubmit={handleSubmit}
       >
         {({ handleBlur, handleChange, values, errors }) => (
           <View>
-            <Text className="my-2">Name</Text>
-            <TextInput
-              className={"border p-2 mb-4 rounded-md border-gray-200"}
-              placeholder="Name"
-              value={values.name}
-              onBlur={handleBlur("name")}
-              onChangeText={handleChange("name")}
-            />
-            <Text className="text-red-500">{errors.name}</Text>
-            <Text className="">Location</Text>
-            <TextInput
-              className={"border p-2 mb-4 rounded-md border-gray-200"}
-              placeholder="Location"
-              value={values.location}
-              onBlur={handleBlur("location")}
-              onChangeText={handleChange("location")}
-            />
-            <Text className="text-red-500">{errors.location}</Text>
-            <Text className="">Duration</Text>
-            <TouchableOpacity
-              onPress={() => setShow(true)}
-              className="border p-2 py-4 mb-4 rounded-md border-gray-200"
-            >
-              <Text>{date.toDateString()}</Text>
-            </TouchableOpacity>
-            {show && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={date}
-                mode={"date"}
-                is24Hour={true}
-                onChange={(e, date) => {
-                  setDate(date as Date);
-                  setShow(true);
-                }}
-              />
-            )}
+            <View>
+              <Text className="">Duration</Text>
+              <TouchableOpacity
+                onPress={() => setShow({ show: true, type: "time" })}
+                className="border p-2 py-4 mb-4 rounded-md border-gray-200"
+              >
+                <Text>{time.toLocaleTimeString()}</Text>
+              </TouchableOpacity>
+              {show.type == "time" && show.show == true && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={time}
+                  mode={"time"}
+                  is24Hour={true}
+                  onChange={(e, date) => {
+                    setTime(date as Date);
+                    setShow({ show: true, type: "time" });
+                  }}
+                />
+              )}
+            </View>
+            <View>
+              <Text className="">Booked From</Text>
+              <TouchableOpacity
+                onPress={() => setShow({ show: true, type: "bookedFrom" })}
+                className="border p-2 py-4 mb-4 rounded-md border-gray-200"
+              >
+                <Text>{bookedFrom.toDateString()}</Text>
+              </TouchableOpacity>
+              {show.show && show.type == "bookedFrom" && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={bookedFrom}
+                  mode={"date"}
+                  is24Hour={true}
+                  onChange={(e, date) => {
+                    setBookedFrom(date as Date);
+                    setShow({ show: true, type: "bookedFrom" });
+                  }}
+                />
+              )}
+            </View>
+            <View>
+              <Text className="">Booked To</Text>
+              <TouchableOpacity
+                onPress={() => setShow({ show: true, type: "bookedTo" })}
+                className="border p-2 py-4 mb-4 rounded-md border-gray-200"
+              >
+                <Text>{bookedTo.toDateString()}</Text>
+              </TouchableOpacity>
+              {show.show && show.type == "bookedTo" && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={bookedTo}
+                  mode={"date"}
+                  is24Hour={true}
+                  onChange={(e, date) => {
+                    setBookedTo(date as Date);
+                    setShow({ show: true, type: "bookedTo" });
+                  }}
+                />
+              )}
+            </View>
             <TouchableOpacity
               disabled={loading}
               className="border-none text-white rounded-xl p-3 flex justify-center items-center bg-blue-800"

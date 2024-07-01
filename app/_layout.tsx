@@ -16,6 +16,7 @@ import BookingScreen from "./hall/booking";
 import CreateHallScreen from "./hall/create";
 import HomeScreen from "./index";
 import SignUpScreen from "./auth/signup";
+import HallsScreen from "./hall/halls";
 
 const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -59,6 +60,11 @@ export default function RootLayout() {
               <Stack.Screen
                 name="hall/create"
                 component={CreateHallScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="hall/halls"
+                component={HallsScreen}
                 options={{ headerShown: false }}
               />
               <Stack.Screen
