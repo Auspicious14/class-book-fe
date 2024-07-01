@@ -1,32 +1,42 @@
+import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Formik } from "formik";
-import React, { useState } from "react";
-import {
-  SafeAreaView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as Yup from "yup";
+
+const FormSchema = Yup.object().shape({
+  name: Yup.string().required("Hall Name is required"),
+  location: Yup.string().required("Locaion is required"),
+});
 
 const CreateHallScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [token, setToken] = useState<string>("");
 
-  const token = AsyncStorage.getItem("token");
-
-  console.log(
-    token.then((e) => console.log(e, "eeeee")),
-    "token"
-  );
+  const fetchToken = async () => {
+    try {
+      const storedToken = await AsyncStorage.getItem("secret");
+      if (storedToken) {
+        const parsed = JSON.parse(storedToken);
+        setToken(parsed.token);
+      }
+    } catch (error) {
+      console.error("Failed to fetch token", error);
+    }
+  };
+  useEffect(() => {
+    fetchToken();
+  }, [token]);
 
   const handleSubmit = async (val: any) => {
     const { name, location } = val;
     setLoading(true);
     try {
       const response = await axios({
-        url: "http://192.168.213.241:2000/create/hall",
+        url: "http://192.168.25.241:2000/create/hall",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,7 +56,11 @@ const CreateHallScreen = () => {
         });
       }
     } catch (error: any) {
-      console.log("Error", error.message);
+      Toast.show(error?.message, {
+        backgroundColor: "green",
+        textColor: "white",
+      });
+      setLoading(false);
     }
   };
 
@@ -58,10 +72,10 @@ const CreateHallScreen = () => {
         </Text>
         <Formik
           initialValues={{ name: "", location: "" }}
-          validationSchema={""}
+          validationSchema={FormSchema}
           onSubmit={handleSubmit}
         >
-          {({ handleBlur, handleChange, values, errors }) => (
+          {({ handleBlur, handleChange, values, handleSubmit, errors }) => (
             <View>
               <Text className="my-2">Name</Text>
               <TextInput
@@ -85,7 +99,7 @@ const CreateHallScreen = () => {
               <TouchableOpacity
                 disabled={loading}
                 className="border-none text-white rounded-xl p-3 flex justify-center items-center bg-blue-800"
-                onPress={handleSubmit}
+                onPress={() => handleSubmit()}
               >
                 <Text className="text-white ">
                   {loading ? "Loading..." : "Create Hall"}

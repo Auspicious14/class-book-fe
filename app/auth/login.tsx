@@ -16,6 +16,7 @@ import * as Yup from "yup";
 import { Feather } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import Toast from "react-native-root-toast";
+import { useNavigation } from "@react-navigation/native";
 
 const FormSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email"),
@@ -23,6 +24,7 @@ const FormSchema = Yup.object().shape({
 });
 
 const LoginScreen = () => {
+  const navigation: any = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(true);
 
@@ -32,7 +34,7 @@ const LoginScreen = () => {
     setLoading(true);
     try {
       const response = await axios({
-        url: "http://192.168.213.241:2000/auth/login",
+        url: "http://192.168.25.241:2000/auth/login",
         method: "POST",
         data: { email, password },
       });
@@ -47,16 +49,23 @@ const LoginScreen = () => {
           textColor: "white",
         });
       }
-
       if (data.token) {
-        await AsyncStorage.setItem("token", data.token);
+        await AsyncStorage.setItem(
+          "secret",
+          JSON.stringify({
+            token: data.token,
+            role: data?.data?.role,
+          })
+        );
+        console.log(data.data, "data data");
         data?.data?.role === "classRep"
-          ? router.push("hall/book")
+          ? navigation.navigate("bookHall")
           : data?.data?.role === "admin"
-          ? router.push("hall/create")
-          : router.push("profile");
+          ? navigation.navigate("createHall")
+          : navigation.navigate("profile");
       }
     } catch (error: any) {
+      setLoading(false);
       Alert.alert("Error", error.message);
     }
   };

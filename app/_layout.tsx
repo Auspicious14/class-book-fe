@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
 import "react-native-reanimated";
 import { RootSiblingParent } from "react-native-root-siblings";
-
-import { useColorScheme } from "../hooks/useColorScheme";
-import Toast from "react-native-root-toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { string } from "yup";
+import { createStackNavigator } from "@react-navigation/stack";
+import NotFoundScreen from "./+not-found";
+import LoginScreen from "./auth/login";
+import BookingScreen from "./hall/booking";
+import CreateHallScreen from "./hall/create";
+import HomeScreen from "./index";
+import SignUpScreen from "./auth/signup";
 
+const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -26,9 +28,10 @@ export default function RootLayout() {
 
   const fetchToken = async () => {
     try {
-      const storedToken = await AsyncStorage.getItem("token");
+      const storedToken = await AsyncStorage.getItem("secret");
       if (storedToken) {
-        setToken(storedToken);
+        const parsed = JSON.parse(storedToken);
+        setToken(parsed.token);
       }
     } catch (error) {
       console.error("Failed to fetch token", error);
@@ -36,6 +39,7 @@ export default function RootLayout() {
   };
 
   useEffect(() => {
+    // AsyncStorage.removeItem("secret");
     fetchToken();
     if (loaded) {
       SplashScreen.hideAsync();
@@ -49,23 +53,50 @@ export default function RootLayout() {
   return (
     <RootSiblingParent>
       <ThemeProvider value={DefaultTheme}>
-        {token ? (
-          <Stack>
-            <Stack.Screen name="hall/create" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="hall/booking"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="+not-found" options={{ headerShown: false }} />
-          </Stack>
-        ) : (
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" options={{ headerShown: false }} />
-            <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-            <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
-          </Stack>
-        )}
+        <Stack.Navigator>
+          {token ? (
+            <>
+              <Stack.Screen
+                name="hall/create"
+                component={CreateHallScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="bookHall"
+                component={BookingScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="+not-found"
+                component={NotFoundScreen}
+                options={{ headerShown: false }}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="index"
+                component={HomeScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="auth/login"
+                component={LoginScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="auth/signup"
+                component={SignUpScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="+not-found"
+                component={NotFoundScreen}
+                options={{ headerShown: false }}
+              />
+            </>
+          )}
+        </Stack.Navigator>
       </ThemeProvider>
     </RootSiblingParent>
   );
