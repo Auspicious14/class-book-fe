@@ -22,7 +22,10 @@ const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [token, setToken] = useState<string>("");
+  const [auth, setAuth] = useState<{ token: string; role: string }>({
+    token: "",
+    role: "admin",
+  });
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -32,7 +35,7 @@ export default function RootLayout() {
       const storedToken = await AsyncStorage.getItem("secret");
       if (storedToken) {
         const parsed = JSON.parse(storedToken);
-        setToken(parsed.token);
+        setAuth({ token: parsed.token, role: parsed.role });
       }
     } catch (error) {
       console.error("Failed to fetch token", error);
@@ -45,7 +48,7 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, auth]);
 
   if (!loaded) {
     return null;
@@ -55,13 +58,32 @@ export default function RootLayout() {
     <RootSiblingParent>
       <ThemeProvider value={DefaultTheme}>
         <Stack.Navigator>
-          {token ? (
+          {auth.token && auth.role === "admin" ? (
             <>
+              <Stack.Screen
+                name="hall/halls"
+                component={HallsScreen}
+                options={{ headerShown: false }}
+              />
               <Stack.Screen
                 name="hall/create"
                 component={CreateHallScreen}
                 options={{ headerShown: false }}
               />
+
+              <Stack.Screen
+                name="hall/booking"
+                component={BookingScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="+not-found"
+                component={NotFoundScreen}
+                options={{ headerShown: false }}
+              />
+            </>
+          ) : auth.token && auth.role == "classRep" ? (
+            <>
               <Stack.Screen
                 name="hall/halls"
                 component={HallsScreen}
@@ -75,6 +97,14 @@ export default function RootLayout() {
               <Stack.Screen
                 name="+not-found"
                 component={NotFoundScreen}
+                options={{ headerShown: false }}
+              />
+            </>
+          ) : auth.token && auth.role == "student" ? (
+            <>
+              <Stack.Screen
+                name="hall/halls"
+                component={HallsScreen}
                 options={{ headerShown: false }}
               />
             </>

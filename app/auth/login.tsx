@@ -34,7 +34,7 @@ const LoginScreen = () => {
     setLoading(true);
     try {
       const response = await axios({
-        url: "http://192.168.25.241:2000/auth/login",
+        url: "https://class-book-be.onrender.com/auth/login",
         method: "POST",
         data: { email, password },
       });
@@ -66,6 +66,10 @@ const LoginScreen = () => {
       }
     } catch (error: any) {
       setLoading(false);
+      Toast.show(error?.message, {
+        backgroundColor: "red",
+        textColor: "white",
+      });
       Alert.alert("Error", error.message);
     }
   };

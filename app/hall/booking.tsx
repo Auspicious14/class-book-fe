@@ -1,161 +1,215 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
-  Button,
-  FlatList,
   Alert,
   TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  Modal,
+  TextInput,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Formik } from "formik";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { axiosApi } from "../../components/api";
+import Toast from "react-native-root-toast";
 
-const BookingScreen: React.FC = () => {
-  const [lectureHalls, setLectureHalls] = useState([] as any);
-  const [selectedHall, setSelectedHall] = useState({} as any);
-  const [time, setTime] = useState<Date>(new Date());
-  const [bookedFrom, setBookedFrom] = useState<Date>(new Date());
-  const [bookedTo, setBookedTo] = useState<Date>(new Date());
-  const [show, setShow] = useState<{
+const BookingScreen: React.FC = ({ route }: any) => {
+  const [showPicker, setShowPicker] = useState<{
     show: boolean;
-    type?: "time" | "bookedFrom" | "bookedTo";
+    type?:
+      | "bookedFromDate"
+      | "bookedFromTime"
+      | "bookedToDate"
+      | "bookedToTime";
   }>({ show: false });
   const [loading, setLoading] = useState<boolean>(false);
 
-  const token = AsyncStorage.getItem("token");
-  const fetchLectureHalls = async () => {
-    try {
-      const response = await axios("http://192.168.25.241:2000/halls");
-      const data = await response.data?.data;
-      setLectureHalls(data);
-    } catch (error) {
-      console.error("Error fetching lecture halls:", error);
-    }
-  };
-  useEffect(() => {
-    fetchLectureHalls();
-  }, []);
+  const handleSubmit = async (values: any) => {
+    const {
+      duration,
+      bookedFromDate,
+      bookedFromTime,
+      bookedToDate,
+      bookedToTime,
+    } = values;
 
-  const handleSubmit = async (val: any) => {
+    const bookedFrom = new Date(
+      bookedFromDate.getFullYear(),
+      bookedFromDate.getMonth(),
+      bookedFromDate.getDate(),
+      bookedFromTime.getHours(),
+      bookedFromTime.getMinutes()
+    );
+
+    const bookedTo = new Date(
+      bookedToTime.getFullYear(),
+      bookedToDate.getMonth(),
+      bookedToDate.getDate(),
+      bookedToTime.getHours(),
+      bookedToTime.getMinutes()
+    );
+    console.log({ hall: route?.params?.item?._id });
+
     setLoading(true);
+
     try {
-      const response = await axios("http://192.168.213.241:2000/book/hall", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        data: JSON.stringify({ hallId: selectedHall, time }),
+      const { api } = await axiosApi();
+      const res = await api.post(`/book/hall`, {
+        hallId: route?.params?.item?._id,
+        duration: parseFloat(duration),
+        bookedFrom,
+        bookedTo,
       });
 
       setLoading(false);
-
-      Alert.alert("Success", "Lecture hall booked successfully");
+      Toast.show(res?.data.message, {
+        backgroundColor: "green",
+        textColor: "white",
+      });
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      setLoading(false);
+      Toast.show(error.response.data, {
+        backgroundColor: "red",
+        textColor: "white",
+      });
     }
   };
 
   return (
-    <View className={"p-4"}>
-      <Text className={"text-xl mb-4"}>Book a Lecture Hall</Text>
-      <FlatList
-        data={lectureHalls}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <Button
-            title={item.name}
-            onPress={() => setSelectedHall(item._id)}
-            color={item._id === selectedHall ? "blue" : "gray"}
-          />
-        )}
-      />
+    <SafeAreaView className={"p-4"}>
+      <Text className={"text-xl my-4 text-center"}>
+        {`Book ${route?.params?.item?.name} Lecture Hall`}
+      </Text>
+
       <Formik
-        initialValues={{ duration: "", bookedFrom: "", bookedTo: "" }}
-        validationSchema={""}
+        initialValues={{
+          duration: "",
+          bookedFromDate: new Date(),
+          bookedFromTime: new Date(),
+          bookedToDate: new Date(),
+          bookedToTime: new Date(),
+        }}
         onSubmit={handleSubmit}
       >
-        {({ handleBlur, handleChange, values, errors }) => (
+        {({ setFieldValue, values, handleChange }) => (
           <View>
             <View>
-              <Text className="">Duration</Text>
-              <TouchableOpacity
-                onPress={() => setShow({ show: true, type: "time" })}
+              <Text className="">Duration (hours)</Text>
+              <TextInput
+                keyboardType="numeric"
+                value={values.duration}
+                placeholder="Enter duration for hall to book"
                 className="border p-2 py-4 mb-4 rounded-md border-gray-200"
-              >
-                <Text>{time.toLocaleTimeString()}</Text>
-              </TouchableOpacity>
-              {show.type == "time" && show.show == true && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={time}
-                  mode={"time"}
-                  is24Hour={true}
-                  onChange={(e, date) => {
-                    setTime(date as Date);
-                    setShow({ show: true, type: "time" });
-                  }}
-                />
-              )}
+                onChangeText={handleChange("duration")}
+              />
             </View>
             <View>
-              <Text className="">Booked From</Text>
+              <Text className="">Booked From Date</Text>
               <TouchableOpacity
-                onPress={() => setShow({ show: true, type: "bookedFrom" })}
+                onPress={() =>
+                  setShowPicker({ show: true, type: "bookedFromDate" })
+                }
                 className="border p-2 py-4 mb-4 rounded-md border-gray-200"
               >
-                <Text>{bookedFrom.toDateString()}</Text>
+                <Text>{values.bookedFromDate.toDateString()}</Text>
               </TouchableOpacity>
-              {show.show && show.type == "bookedFrom" && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={bookedFrom}
-                  mode={"date"}
-                  is24Hour={true}
-                  onChange={(e, date) => {
-                    setBookedFrom(date as Date);
-                    setShow({ show: true, type: "bookedFrom" });
-                  }}
-                />
-              )}
             </View>
             <View>
-              <Text className="">Booked To</Text>
+              <Text className="">Booked From Time</Text>
               <TouchableOpacity
-                onPress={() => setShow({ show: true, type: "bookedTo" })}
+                onPress={() =>
+                  setShowPicker({ show: true, type: "bookedFromTime" })
+                }
                 className="border p-2 py-4 mb-4 rounded-md border-gray-200"
               >
-                <Text>{bookedTo.toDateString()}</Text>
+                <Text>{values.bookedFromTime.toLocaleTimeString()}</Text>
               </TouchableOpacity>
-              {show.show && show.type == "bookedTo" && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={bookedTo}
-                  mode={"date"}
-                  is24Hour={true}
-                  onChange={(e, date) => {
-                    setBookedTo(date as Date);
-                    setShow({ show: true, type: "bookedTo" });
-                  }}
-                />
-              )}
+            </View>
+            <View>
+              <Text className="">Booked To Date</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  setShowPicker({ show: true, type: "bookedToDate" })
+                }
+                className="border p-2 py-4 mb-4 rounded-md border-gray-200"
+              >
+                <Text>{values.bookedToDate.toDateString()}</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text className="">Booked To Time</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  setShowPicker({ show: true, type: "bookedToTime" })
+                }
+                className="border p-2 py-4 mb-4 rounded-md border-gray-200"
+              >
+                <Text>{values.bookedToTime.toLocaleTimeString()}</Text>
+              </TouchableOpacity>
             </View>
             <TouchableOpacity
               disabled={loading}
               className="border-none text-white rounded-xl p-3 flex justify-center items-center bg-blue-800"
-              onPress={handleSubmit}
+              onPress={() => handleSubmit(values)}
             >
               <Text className="text-white ">
                 {loading ? "Loading..." : "Book Hall"}
               </Text>
             </TouchableOpacity>
+
+            {showPicker.show && (
+              <Modal
+                visible={showPicker.show}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setShowPicker({ show: false })}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                  }}
+                >
+                  <View style={{}}>
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={
+                        showPicker.type === "bookedFromDate"
+                          ? values.bookedFromDate
+                          : showPicker.type === "bookedFromTime"
+                          ? values.bookedFromTime
+                          : showPicker.type === "bookedToDate"
+                          ? values.bookedToDate
+                          : values.bookedToTime
+                      }
+                      mode={showPicker.type!.includes("Date") ? "date" : "time"}
+                      display={Platform.OS === "ios" ? "spinner" : "default"}
+                      onChange={(event, selectedDate) => {
+                        const currentDate = selectedDate || new Date();
+                        setShowPicker({ show: false });
+                        if (showPicker.type === "bookedFromDate") {
+                          setFieldValue("bookedFromDate", currentDate);
+                        } else if (showPicker.type === "bookedFromTime") {
+                          setFieldValue("bookedFromTime", currentDate);
+                        } else if (showPicker.type === "bookedToDate") {
+                          setFieldValue("bookedToDate", currentDate);
+                        } else if (showPicker.type === "bookedToTime") {
+                          setFieldValue("bookedToTime", currentDate);
+                        }
+                      }}
+                    />
+                  </View>
+                </View>
+              </Modal>
+            )}
           </View>
         )}
       </Formik>
-    </View>
+    </SafeAreaView>
   );
 };
 

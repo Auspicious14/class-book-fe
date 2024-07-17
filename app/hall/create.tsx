@@ -39,7 +39,7 @@ const CreateHallScreen = () => {
     setLoading(true);
     try {
       const response = await axios({
-        url: "http://192.168.25.241:2000/create/hall",
+        url: "https://class-book-be.onrender.com/create/hall",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +67,7 @@ const CreateHallScreen = () => {
       }
     } catch (error: any) {
       Toast.show(error?.message, {
-        backgroundColor: "green",
+        backgroundColor: "red",
         textColor: "white",
       });
       setLoading(false);

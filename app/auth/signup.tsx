@@ -38,7 +38,7 @@ const SignUpScreen = () => {
     setLoading(true);
     try {
       const response = await axios({
-        url: "http://192.168.213.241:2000/auth/signup",
+        url: "https://class-book-be.onrender.com/auth/signup",
         method: "POST",
         data: { firstName, lastName, email, password, role: route.role },
       });
@@ -53,8 +53,11 @@ const SignUpScreen = () => {
         router.push("auth/login");
       }
     } catch (error: any) {
-      console.log(error);
       setLoading(false);
+      Toast.show(error?.message, {
+        backgroundColor: "red",
+        textColor: "white",
+      });
     }
   };
 
