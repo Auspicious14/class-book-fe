@@ -14,6 +14,7 @@ import { Formik } from "formik";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { axiosApi } from "../../components/api";
 import Toast from "react-native-root-toast";
+// import DatePicker from "react-native-date-picker";
 
 const BookingScreen: React.FC = ({ route }: any) => {
   const [showPicker, setShowPicker] = useState<{
@@ -159,21 +160,14 @@ const BookingScreen: React.FC = ({ route }: any) => {
               </Text>
             </TouchableOpacity>
 
-            {showPicker.show && (
+            {
               <Modal
                 visible={showPicker.show}
                 transparent={true}
                 animationType="slide"
                 onRequestClose={() => setShowPicker({ show: false })}
               >
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "rgba(0,0,0,0.5)",
-                  }}
-                >
+                <View>
                   <View style={{}}>
                     <DateTimePicker
                       testID="dateTimePicker"
@@ -186,10 +180,18 @@ const BookingScreen: React.FC = ({ route }: any) => {
                           ? values.bookedToDate
                           : values.bookedToTime
                       }
-                      mode={showPicker.type!.includes("Date") ? "date" : "time"}
+                      mode={
+                        showPicker.type === "bookedFromDate" ||
+                        showPicker.type === "bookedToDate"
+                          ? "date"
+                          : "time"
+                      }
                       display={Platform.OS === "ios" ? "spinner" : "default"}
                       onChange={(event, selectedDate) => {
-                        const currentDate = selectedDate || new Date();
+                        const currentDate = new Date(
+                          selectedDate!.getTime() -
+                            selectedDate!.getTimezoneOffset() * 60000
+                        );
                         setShowPicker({ show: false });
                         if (showPicker.type === "bookedFromDate") {
                           setFieldValue("bookedFromDate", currentDate);
@@ -201,11 +203,13 @@ const BookingScreen: React.FC = ({ route }: any) => {
                           setFieldValue("bookedToTime", currentDate);
                         }
                       }}
+                      // collapsable
+                      // onTouchCancel={() => setShowPicker({ show: false })}
                     />
                   </View>
                 </View>
               </Modal>
-            )}
+            }
           </View>
         )}
       </Formik>

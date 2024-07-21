@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Dimensions,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +16,7 @@ import { IHall } from "./model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-root-toast";
 import { axiosApi } from "../../components/api";
+import { ImageBackground } from "react-native";
 
 const numColumns = 2;
 const screenWidth = Dimensions.get("window").width;
@@ -72,7 +74,6 @@ const HallsScreen = () => {
   const navigateToCreateHall = () => {
     navigation.navigate("hall/create");
   };
-
   return (
     <SafeAreaView className="p-8">
       {loading && <Text>Loading...</Text>}
@@ -90,7 +91,7 @@ const HallsScreen = () => {
                   marginHorizontal: 20,
                   marginBottom: 20,
                 }}
-                className=" items-center justify-between p-3 border-2 border-gray-400 rounded-md"
+                className="justify-between border-2 border-gray-400 rounded-md"
                 onPress={() =>
                   navigation.navigate("hall/booking", {
                     item: {
@@ -101,8 +102,19 @@ const HallsScreen = () => {
                   })
                 }
               >
-                <Text>{item.name}</Text>
-                <Text className="">{item.location}</Text>
+                <View className=" w-32">
+                  <Image
+                    source={{
+                      uri: item?.images[0]?.uri,
+                    }}
+                    alt={item?.images[0]?.name as string}
+                    className="w-32 h-32 rounded-md object-contain"
+                  />
+                </View>
+                <View className="my-2 px-3">
+                  <Text>{item.name}</Text>
+                  <Text className="">{item.location}</Text>
+                </View>
               </TouchableOpacity>
             )}
           />
