@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-root-toast";
 import { axiosApi } from "../../components/api";
 import { ImageBackground } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 
 const numColumns = 2;
 const screenWidth = Dimensions.get("window").width;
@@ -71,11 +72,11 @@ const HallsScreen = () => {
       />
     );
   }
-  const navigateToCreateHall = () => {
-    navigation.navigate("hall/create");
+  const navigateToCreateHall = (item?: IHall) => {
+    navigation.navigate("hall/create", item ? { item } : null);
   };
   return (
-    <SafeAreaView className="p-8">
+    <SafeAreaView className="p-8 px-4">
       {loading && <Text>Loading...</Text>}
       {!loading && halls.length > 0 && (
         <View className="py-8">
@@ -90,8 +91,9 @@ const HallsScreen = () => {
                   flex: 1,
                   marginHorizontal: 20,
                   marginBottom: 20,
+                  position: "relative",
                 }}
-                className="justify-between border-2 border-gray-400 rounded-md"
+                className=" justify-between border-2 border-gray-400 rounded-md"
                 onPress={() =>
                   navigation.navigate("hall/booking", {
                     item: {
@@ -102,13 +104,26 @@ const HallsScreen = () => {
                   })
                 }
               >
-                <View className=" w-32">
+                <View className="relative w-36">
+                  <AntDesign
+                    name="pluscircle"
+                    size={20}
+                    color={"blue"}
+                    style={{
+                      position: "absolute",
+                      top: 2,
+                      right: 2,
+                      zIndex: 100,
+                    }}
+                    onPress={() => navigateToCreateHall(item)}
+                  />
                   <Image
                     source={{
                       uri: item?.images[0]?.uri,
                     }}
                     alt={item?.images[0]?.name as string}
-                    className="w-32 h-32 rounded-md object-contain"
+                    className="w-36 h-32 rounded-md object-contain"
+                    style={{ maxWidth: columnWidth }}
                   />
                 </View>
                 <View className="my-2 px-3">
@@ -120,11 +135,13 @@ const HallsScreen = () => {
           />
         </View>
       )}
-      <Button
-        title="Create New Hall"
-        onPress={navigateToCreateHall}
-        // style={"absolute top-0 bottom-0"}
-      />
+      <TouchableOpacity
+        onPress={() => navigateToCreateHall()}
+        style={{ position: "absolute", bottom: 0, right: 0, left: 0 }}
+        className="border-none  rounded-xl p-3 mx-4 flex justify-center items-center bg-blue-800"
+      >
+        <Text className="text-white">Create New Hall</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

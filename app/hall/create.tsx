@@ -18,11 +18,12 @@ const FormSchema = Yup.object().shape({
   location: Yup.string().required("Locaion is required"),
 });
 
-const CreateHallScreen = () => {
-  const navigation: any = useNavigation();
+const CreateHallScreen = ({ route }: any) => {
+  console.log(route.params.item, "itemm");
   const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
-  const [image, setImage] = useState<any>();
+  const { _id, images, location, name } = route.params.item;
+  const [image, setImage] = useState<any>(images);
 
   const fetchToken = async () => {
     try {
@@ -82,11 +83,21 @@ const CreateHallScreen = () => {
     setLoading(true);
     try {
       const { api } = await axiosApi();
-      const response = await api.post("/create/hall", {
-        name,
-        location,
-        files: [image],
-      });
+      let response;
+      if (_id) {
+        response = await api.put("/update/hall", {
+          _id,
+          name,
+          location,
+          files: [image],
+        });
+      } else {
+        response = await api.post("/create/hall", {
+          name,
+          location,
+          files: [image],
+        });
+      }
 
       setLoading(false);
 
@@ -113,6 +124,7 @@ const CreateHallScreen = () => {
         });
       }
     } catch (error: any) {
+      console.log("response error", error);
       Toast.show(error?.message, {
         backgroundColor: "red",
         textColor: "white",
@@ -125,10 +137,10 @@ const CreateHallScreen = () => {
     <SafeAreaView>
       <View className="p-8 h-full">
         <Text className="text-center my-4 text-xl font-bold">
-          Create a Lecture Hall
+          {_id ? `Update ${name} Lecture Hall` : "Create a Lecture Hall"}
         </Text>
         <Formik
-          initialValues={{ name: "", location: "" }}
+          initialValues={{ name: name || "", location: location || "" }}
           validationSchema={FormSchema}
           onSubmit={handleSubmit}
         >
@@ -164,7 +176,7 @@ const CreateHallScreen = () => {
                 onBlur={handleBlur("name")}
                 onChangeText={handleChange("name")}
               />
-              <Text className="text-red-500">{errors.name}</Text>
+              <Text className="text-red-500">{errors.name as string}</Text>
               <Text className="">Location</Text>
               <TextInput
                 className={"border p-2 mb-4 rounded-md border-gray-200"}
@@ -173,7 +185,7 @@ const CreateHallScreen = () => {
                 onBlur={handleBlur("location")}
                 onChangeText={handleChange("location")}
               />
-              <Text className="text-red-500">{errors.location}</Text>
+              <Text className="text-red-500">{errors.location as string}</Text>
 
               <TouchableOpacity
                 disabled={loading}
@@ -181,7 +193,7 @@ const CreateHallScreen = () => {
                 onPress={() => handleSubmit()}
               >
                 <Text className="text-white ">
-                  {loading ? "Loading..." : "Create Hall"}
+                  {loading ? "Loading..." : _id ? "Update Hall" : "Create Hall"}
                 </Text>
               </TouchableOpacity>
             </View>
