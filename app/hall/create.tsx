@@ -19,11 +19,11 @@ const FormSchema = Yup.object().shape({
 });
 
 const CreateHallScreen = ({ route }: any) => {
-  console.log(route.params.item, "itemm");
+  const item = route?.params?.item || {};
+  const { _id = "", images = [], location = "", name = "" } = item;
   const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
-  const { _id, images, location, name } = route.params.item;
-  const [image, setImage] = useState<any>(images);
+  const [image, setImage] = useState<any>(images[0] || null);
 
   const fetchToken = async () => {
     try {
@@ -36,6 +36,7 @@ const CreateHallScreen = ({ route }: any) => {
       console.error("Failed to fetch token", error);
     }
   };
+
   useEffect(() => {
     fetchToken();
   }, [token]);
@@ -48,10 +49,7 @@ const CreateHallScreen = ({ route }: any) => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
-      console.log(result.assets, "assets");
       const fileUri = result.assets[0].uri;
       try {
         const manipulatedImage = await ImageManipulator.manipulateAsync(
@@ -78,6 +76,7 @@ const CreateHallScreen = ({ route }: any) => {
       }
     }
   };
+
   const handleSubmit = async (val: any, actions: any) => {
     const { name, location } = val;
     setLoading(true);
@@ -124,7 +123,6 @@ const CreateHallScreen = ({ route }: any) => {
         });
       }
     } catch (error: any) {
-      console.log("response error", error);
       Toast.show(error?.message, {
         backgroundColor: "red",
         textColor: "white",
@@ -163,7 +161,7 @@ const CreateHallScreen = ({ route }: any) => {
                       height: 200,
                       width: 200,
                     }}
-                    alt={image?.fileName as string}
+                    alt={image?.name as string}
                     className="rounded-md m-auto mt-6"
                   />
                 </TouchableOpacity>

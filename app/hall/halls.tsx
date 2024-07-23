@@ -93,7 +93,7 @@ const HallsScreen = () => {
                   marginBottom: 20,
                   position: "relative",
                 }}
-                className=" justify-between border-2 border-gray-400 rounded-md"
+                className=" justify-between inset-2 shadow-sm rounded-md"
                 onPress={() =>
                   navigation.navigate("hall/booking", {
                     item: {
@@ -137,7 +137,7 @@ const HallsScreen = () => {
       )}
       <TouchableOpacity
         onPress={() => navigateToCreateHall()}
-        style={{ position: "absolute", bottom: 0, right: 0, left: 0 }}
+        style={{ position: "absolute", bottom: 2, right: 0, left: 0 }}
         className="border-none  rounded-xl p-3 mx-4 flex justify-center items-center bg-blue-800"
       >
         <Text className="text-white">Create New Hall</Text>
