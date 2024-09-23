@@ -17,6 +17,7 @@ import CreateHallScreen from "./hall/create";
 import HomeScreen from "./index";
 import SignUpScreen from "./auth/signup";
 import HallsScreen from "./hall/halls";
+import WelcomeScreen from "./onboarding/welcome";
 
 const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -53,7 +54,7 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
+  console.log(loaded, "tokk");
   return (
     <RootSiblingParent>
       <ThemeProvider value={DefaultTheme}>
@@ -111,8 +112,8 @@ export default function RootLayout() {
           ) : (
             <>
               <Stack.Screen
-                name="index"
-                component={HomeScreen}
+                name="onboarding/welcome"
+                component={WelcomeScreen}
                 options={{ headerShown: false }}
               />
               <Stack.Screen
