@@ -17,10 +17,10 @@ const OnboardFinalScreen: React.FC<IProps> = ({ color, next }) => {
   return (
     <SafeAreaView className=" bg-secondary h-full flex justify-center items-center  px-10">
       <View className="my-4">
-        <Text className="text-white text-3xl text-center font-bold my-2">
+        <Text className="text-dark text-3xl text-center font-bold my-2">
           You're all set!
         </Text>
-        <Text className="text-white ">
+        <Text className="text-dark">
           Start booking lecture halls now and take control of your study or
           meeting space. Happy booking!
         </Text>
@@ -33,15 +33,15 @@ const OnboardFinalScreen: React.FC<IProps> = ({ color, next }) => {
         />
       </View>
       <View className="flex gap-4 flex-row">
-        <FontAwesome6 name="dot-circle" color={"white"} />
-        <FontAwesome6 name="dot-circle" color={"white"} />
-        <FontAwesome6 name="dot-circle" color={"white"} />
-        <FontAwesome6 name="dot-circle" color={"white"} />
-        <FontAwesome6 name="dot-circle" color={color ? "#9C27B0" : "white"} />
+        <FontAwesome6 name="dot-circle" color={"gray"} />
+        <FontAwesome6 name="dot-circle" color={"gray"} />
+        <FontAwesome6 name="dot-circle" color={"gray"} />
+        <FontAwesome6 name="dot-circle" color={"gray"} />
+        <FontAwesome6 name="dot-circle" color={color ? "#4CAF50" : "gray"} />
       </View>
       <TouchableOpacity
         onPress={next}
-        className="bg-accent rounded-full p-4 mt-12 w-full"
+        className="bg-primary rounded-full p-4 mt-12 w-full"
       >
         <Text className="text-center text-white">Start Booking</Text>
       </TouchableOpacity>

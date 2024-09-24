@@ -33,11 +33,11 @@ const WelcomeScreen: React.FC<IProps> = ({ color, next }) => {
         />
       </View>
       <View className="flex gap-4 flex-row">
-        <FontAwesome6 name="dot-circle" color={color ? "#9C27B0" : "white"} />
-        <FontAwesome6 name="dot-circle" color="white" />
-        <FontAwesome6 name="dot-circle" color="white" />
-        <FontAwesome6 name="dot-circle" color="white" />
-        <FontAwesome6 name="dot-circle" color="white" />
+        <FontAwesome6 name="dot-circle" color={color ? "#4CAF50" : "gray"} />
+        <FontAwesome6 name="dot-circle" color="gray" />
+        <FontAwesome6 name="dot-circle" color="gray" />
+        <FontAwesome6 name="dot-circle" color="gray" />
+        <FontAwesome6 name="dot-circle" color="gray" />
       </View>
       <TouchableOpacity
         className="bg-primary rounded-full p-4 mt-12 w-full"
