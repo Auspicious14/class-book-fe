@@ -18,6 +18,7 @@ import HomeScreen from "./index";
 import SignUpScreen from "./auth/signup";
 import HallsScreen from "./hall/halls";
 import WelcomeScreen from "./onboarding/welcome";
+import OnboardScreen from "./onboarding";
 
 const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -112,8 +113,8 @@ export default function RootLayout() {
           ) : (
             <>
               <Stack.Screen
-                name="onboarding/welcome"
-                component={WelcomeScreen}
+                name="onboarding/index"
+                component={OnboardScreen}
                 options={{ headerShown: false }}
               />
               <Stack.Screen
