@@ -18,6 +18,7 @@ import * as Yup from "yup";
 import { Feather } from "@expo/vector-icons";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import Toast from "react-native-root-toast";
+import Dropdown from "react-native-input-select";
 
 const FormSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name is required"),
@@ -33,6 +34,7 @@ const SignUpScreen = () => {
   const route = useLocalSearchParams();
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(true);
+  const [role, setRole] = useState<string>("");
 
   const handleSubmit = async (val: any) => {
     const { email, password, firstName, lastName } = val;
@@ -42,7 +44,7 @@ const SignUpScreen = () => {
       const response = await axios({
         url: "https://class-book-be.onrender.com/auth/signup",
         method: "POST",
-        data: { firstName, lastName, email, password, role: route.role },
+        data: { firstName, lastName, email, password, role },
       });
 
       setLoading(false);
@@ -77,7 +79,7 @@ const SignUpScreen = () => {
               Create an Account
             </Text>
           </View>
-          <>
+          <ScrollView style={{ height: windowHeight - 280 }}>
             <>
               <Formik
                 initialValues={{
@@ -125,6 +127,29 @@ const SignUpScreen = () => {
                       onChangeText={handleChange("email")}
                     />
                     <Text className="text-red-500">{errors.email}</Text>
+                    <Dropdown
+                      label="Role"
+                      selectedValue={role}
+                      options={[
+                        { label: "Admin", value: "admin" },
+                        { label: "Representative", value: "classRep" },
+                        { label: "Student", value: "student" },
+                      ]}
+                      placeholder="Select a role"
+                      autoCloseOnSelect
+                      dropdownStyle={{
+                        borderStyle: "solid",
+                        borderColor: "gray",
+                      }}
+                      labelStyle={{
+                        marginHorizontal: 4,
+                        color: "#666666",
+                        fontSize: 14,
+                        fontWeight: "700",
+                      }}
+                      placeholderStyle={{ padding: 0, margin: 0 }}
+                      onValueChange={(value: string) => setRole(value)}
+                    />
                     <View className="relative">
                       <Text className="mb-2 text-dark">Password</Text>
                       <TextInput
@@ -201,7 +226,7 @@ const SignUpScreen = () => {
                 )}
               </Formik>
             </>
-          </>
+          </ScrollView>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
