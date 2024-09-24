@@ -15,7 +15,7 @@ interface IProps {
 
 const OnboardFinalScreen: React.FC<IProps> = ({ color, next }) => {
   return (
-    <SafeAreaView className=" bg-primary h-full flex justify-center items-center  px-10">
+    <SafeAreaView className=" bg-secondary h-full flex justify-center items-center  px-10">
       <View className="my-4">
         <Text className="text-white text-3xl text-center font-bold my-2">
           You're all set!
