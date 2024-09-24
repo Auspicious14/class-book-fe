@@ -8,6 +8,8 @@ import {
   ImageBackground,
   KeyboardAvoidingView,
   ScrollView,
+  Image,
+  Dimensions,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -60,18 +62,22 @@ const SignUpScreen = () => {
       });
     }
   };
+  const windowHeight = Dimensions.get("window").height;
 
   return (
     <KeyboardAvoidingView>
-      <ScrollView>
-        <SafeAreaView>
-          <View className={"p-8"}>
-            <Text className={"text-2xl mb-4 text-center"}>Welcome</Text>
-            <Text className={"mb-4 text-center"}>Sign up</Text>
-            <ImageBackground
-              source={require("../../assets/images/partial-react-logo.png")}
-              className="flex justify-center"
+      <SafeAreaView style={{ maxHeight: windowHeight }}>
+        <View className={"bg-secondary p-8"}>
+          <View className={"flex justify-center items-center "}>
+            <Image
+              source={require("../../assets/images/Thesis-pana.png")}
+              className="flex justify-center w-40 h-40 object-cover"
             />
+            <Text className={"text-2xl mb-4 text-center text-dark"}>
+              Create an Account
+            </Text>
+          </View>
+          <>
             <>
               <Formik
                 initialValues={{
@@ -91,28 +97,28 @@ const SignUpScreen = () => {
                   values,
                   errors,
                 }) => (
-                  <View>
-                    <Text className="my-2">First Name</Text>
+                  <>
+                    <Text className="mb-2 text-dark">First Name</Text>
                     <TextInput
-                      className={"border p-2 mb-4 rounded-md border-gray-200"}
+                      className={"border p-2 rounded-md border-gray-200 "}
                       placeholder="First Name"
                       value={values.firstName}
                       onBlur={handleBlur("firstName")}
                       onChangeText={handleChange("firstName")}
                     />
                     <Text className="text-red-500">{errors.firstName}</Text>
-                    <Text className="">Last Name</Text>
+                    <Text className="mb-2 text-dark">Last Name</Text>
                     <TextInput
-                      className={"border p-2 mb-4 rounded-md border-gray-200"}
+                      className={"border p-2 rounded-md border-gray-200"}
                       placeholder="Last Name"
                       value={values.lastName}
                       onBlur={handleBlur("lastName")}
                       onChangeText={handleChange("lastName")}
                     />
                     <Text className="text-red-500">{errors.lastName}</Text>
-                    <Text className="my-2">Email</Text>
+                    <Text className="my-2 text-dark">Email</Text>
                     <TextInput
-                      className={"border p-2 mb-4 rounded-md border-gray-200"}
+                      className={"border p-2 rounded-md border-gray-200"}
                       placeholder="Email"
                       value={values.email}
                       onBlur={handleBlur("email")}
@@ -120,9 +126,9 @@ const SignUpScreen = () => {
                     />
                     <Text className="text-red-500">{errors.email}</Text>
                     <View className="relative">
-                      <Text className="my-2">Password</Text>
+                      <Text className="mb-2 text-dark">Password</Text>
                       <TextInput
-                        className={"border p-2 mb-4 rounded-md border-gray-200"}
+                        className={"border p-2 rounded-md border-gray-200"}
                         placeholder="Password"
                         value={values.password}
                         onBlur={handleBlur("password")}
@@ -130,7 +136,7 @@ const SignUpScreen = () => {
                         secureTextEntry={showPassword}
                       />
                       <Text className="text-red-500">{errors.password}</Text>
-                      <View className="absolute top-12 right-4 ">
+                      <View className="absolute top-12 right-4">
                         {showPassword ? (
                           <Feather
                             size={15}
@@ -147,7 +153,7 @@ const SignUpScreen = () => {
                       </View>
                     </View>
                     <View className="relative">
-                      <Text className="">Confirm Password</Text>
+                      <Text className="mb-2 text-dark">Confirm Password</Text>
                       <TextInput
                         className={"border p-2 mb-4 rounded-md border-gray-200"}
                         placeholder="Password"
@@ -159,7 +165,7 @@ const SignUpScreen = () => {
                       <Text className="text-red-500">
                         {errors.confirmPassword}
                       </Text>
-                      <View className="absolute top-12 right-4 ">
+                      <View className="absolute top-12 right-4">
                         {showPassword ? (
                           <Feather
                             size={15}
@@ -177,7 +183,7 @@ const SignUpScreen = () => {
                     </View>
                     <TouchableOpacity
                       disabled={loading}
-                      className="border-none text-white rounded-xl p-3 flex justify-center items-center bg-blue-800"
+                      className="border-none rounded-xl p-3 my-4 flex justify-center items-center bg-primary"
                       onPress={() => handleSubmit()}
                     >
                       <Text className="text-white ">
@@ -185,19 +191,19 @@ const SignUpScreen = () => {
                       </Text>
                     </TouchableOpacity>
 
-                    <View className="flex flex-row justify-center my-3 gap-2 items-center">
-                      <Text>Already signed up?</Text>
-                      <Link href={"auth/login"} className="text-blue-800">
+                    <View className="flex flex-row justify-center gap-2 items-center">
+                      <Text className="text-dark">Already signed up?</Text>
+                      <Link href={"auth/login"} className="text-primary">
                         <Text>Login</Text>
                       </Link>
                     </View>
-                  </View>
+                  </>
                 )}
               </Formik>
             </>
-          </View>
-        </SafeAreaView>
-      </ScrollView>
+          </>
+        </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };

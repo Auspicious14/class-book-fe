@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  Dimensions,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -73,15 +74,21 @@ const LoginScreen = () => {
       Alert.alert("Error", error.message);
     }
   };
+  const windowHeight = Dimensions.get("window").height;
 
   return (
-    <SafeAreaView>
-      <View className={"p-8"}>
-        <Text className={"text-2xl mb-4 text-center"}>Login</Text>
-        <ImageBackground
-          source={require("../../assets/images/admin.png")}
-          className="flex justify-center"
-        />
+    <SafeAreaView
+      style={{ height: windowHeight }}
+      className={"bg-secondary p-8"}
+    >
+      <View>
+        <View className={"flex justify-center items-center "}>
+          <Image
+            source={require("../../assets/images/Key-pana.png")}
+            className="flex justify-center w-40 h-40 object-cover"
+          />
+          <Text className={"text-2xl mb-4 text-center text-dark"}>Login</Text>
+        </View>
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={FormSchema}
@@ -91,7 +98,7 @@ const LoginScreen = () => {
             <View>
               <Text className="my-2">Email</Text>
               <TextInput
-                className={"border p-2 mb-4 rounded-md border-gray-200"}
+                className={"border p-2 rounded-md border-gray-200"}
                 placeholder="Email"
                 value={values.email}
                 onBlur={handleBlur("email")}
@@ -101,7 +108,7 @@ const LoginScreen = () => {
               <View className="relative">
                 <Text className="my-2">Password</Text>
                 <TextInput
-                  className={"border p-2 mb-4 rounded-md border-gray-200"}
+                  className={"border p-2 rounded-md border-gray-200"}
                   placeholder="Password"
                   value={values.password}
                   onBlur={handleBlur("password")}
@@ -127,17 +134,17 @@ const LoginScreen = () => {
               </View>
               <TouchableOpacity
                 disabled={loading}
-                className="border-none text-white rounded-xl p-3 flex justify-center items-center bg-blue-800"
+                className="border-none text-white rounded-xl p-3 my-4 flex justify-center items-center bg-primary"
                 onPress={() => handleSubmit()}
               >
                 <Text className="text-white ">
                   {loading ? "Loading..." : "Login"}
                 </Text>
               </TouchableOpacity>
-              <View className="flex flex-row justify-center my-3 gap-2 items-center">
+              <View className="flex flex-row justify-center gap-2 items-center">
                 <Text>Already signed up?</Text>
-                <Link href={"auth/signup"} className="text-blue-800">
-                  <Text>Login</Text>
+                <Link href={"auth/signup"} className="text-dark">
+                  <Text>Sign Up</Text>
                 </Link>
               </View>
             </View>
