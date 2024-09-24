@@ -31,6 +31,8 @@ const LoginScreen = () => {
 
   const handleSubmit = async (val: any) => {
     const { email, password } = val;
+    const expirationTime = 7 * 24 * 60 * 60 * 1000;
+    const expirationDate = new Date().getTime() + expirationTime;
 
     setLoading(true);
     try {
@@ -50,6 +52,7 @@ const LoginScreen = () => {
           textColor: "white",
         });
       }
+
       if (data.token) {
         await AsyncStorage.setItem(
           "secret",
@@ -58,12 +61,9 @@ const LoginScreen = () => {
             role: data?.data?.role,
           })
         );
-        console.log(data.data, "data data");
-        data?.data?.role === "classRep"
-          ? navigation.navigate("bookHall")
-          : data?.data?.role === "admin"
-          ? navigation.navigate("createHall")
-          : navigation.navigate("profile");
+        await AsyncStorage.setItem("tokenExpiry", expirationDate.toString());
+
+        navigation.navigate("hall/halls");
       }
     } catch (error: any) {
       setLoading(false);
