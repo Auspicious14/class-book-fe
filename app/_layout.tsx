@@ -35,17 +35,19 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    const checkTokenAndLaunch = async () => {
-      const tokenData = await fetchToken();
-      const onboardingComplete = await isOnboardingComplete();
+    const checkAuth = async () => {
+      const authStatus = await fetchToken();
 
-      if (!onboardingComplete) {
+      if (authStatus) {
+        if (authStatus.onboardingIncomplete) {
+          setIsFirstLaunch(true);
+          router.navigate("onboarding/index");
+        } else {
+          setAuth({ token: authStatus.token, role: authStatus.role });
+        }
+      } else {
         setIsFirstLaunch(true);
         router.navigate("onboarding/index");
-      } else if (!tokenData) {
-        router.navigate("auth/login");
-      } else {
-        setAuth({ token: tokenData.token, role: tokenData.role });
       }
 
       if (loaded) {
@@ -53,7 +55,7 @@ export default function RootLayout() {
       }
     };
 
-    checkTokenAndLaunch();
+    checkAuth();
   }, [loaded, auth]);
 
   if (!loaded) {

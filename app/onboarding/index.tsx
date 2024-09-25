@@ -6,6 +6,7 @@ import OnboardBookScreen from "./book";
 import OnboardManageScreen from "./manage";
 import OnboardFinalScreen from "./final";
 import { useNavigation } from "@react-navigation/native";
+import { completeOnboarding } from "../../helper";
 
 const OnboardScreen = () => {
   const [show, setShow] = useState<{
@@ -42,7 +43,9 @@ const OnboardScreen = () => {
       )}
       {show.show && show.type === "final" && (
         <OnboardFinalScreen
-          next={() => router.navigate("auth/signup")}
+          next={() => {
+            completeOnboarding(), router.navigate("auth/signup");
+          }}
           color={show.type == "final"}
         />
       )}

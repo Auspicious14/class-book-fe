@@ -18,6 +18,8 @@ import Toast from "react-native-root-toast";
 import { axiosApi } from "../../components/api";
 import { ImageBackground } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { fetchToken } from "../../helper";
+import { SearchBar } from "@rneui/themed";
 
 const numColumns = 2;
 const screenWidth = Dimensions.get("window").width;
@@ -28,18 +30,6 @@ const HallsScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [halls, setHalls] = useState<IHall[]>([]);
   const navigation: any = useNavigation();
-
-  const fetchToken = async () => {
-    try {
-      const storedToken = await AsyncStorage.getItem("secret");
-      if (storedToken) {
-        const parsed = JSON.parse(storedToken);
-        setToken(parsed.token);
-      }
-    } catch (error) {
-      console.error("Failed to fetch token", error);
-    }
-  };
 
   const fetchHalls = async () => {
     setLoading(true);
@@ -57,17 +47,22 @@ const HallsScreen = () => {
     }
   };
   useEffect(() => {
-    if (token !== "") {
-      fetchHalls();
-    }
-    fetchToken();
+    const statusToken = async () => {
+      const data = await fetchToken();
+
+      if (data?.token !== "") {
+        fetchHalls();
+      }
+    };
+
+    statusToken();
   }, [token]);
 
   if (loading) {
     return (
       <ActivityIndicator
         size="large"
-        color="#0000ff"
+        color="#00ff00"
         style={{ flex: 1, justifyContent: "center" }}
       />
     );
@@ -77,6 +72,12 @@ const HallsScreen = () => {
   };
   return (
     <SafeAreaView className="p-8 px-4">
+      <View>
+        <Text className="text-xl font-bold text-center text-dark">
+          Available Lecture Halls
+        </Text>
+        <SearchBar placeholder="Search for a hall..." />
+      </View>
       {loading && <Text>Loading...</Text>}
       {!loading && halls.length > 0 && (
         <View className="py-8">
