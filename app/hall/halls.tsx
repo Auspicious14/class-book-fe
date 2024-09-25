@@ -20,43 +20,19 @@ import { ImageBackground } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { fetchToken } from "../../helper";
 import { SearchBar } from "@rneui/themed";
+import { useHallState } from "./context";
 
 const numColumns = 2;
 const screenWidth = Dimensions.get("window").width;
 const columnWidth = screenWidth / numColumns;
 
 const HallsScreen = () => {
-  const [token, setToken] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [halls, setHalls] = useState<IHall[]>([]);
+  const { halls, getHalls, loading } = useHallState();
   const navigation: any = useNavigation();
 
-  const fetchHalls = async () => {
-    setLoading(true);
-    try {
-      const { api } = await axiosApi();
-      const response = await api.get("/halls");
-      setLoading(false);
-      setHalls(response.data?.data);
-    } catch (error: any) {
-      setLoading(false);
-      Toast.show(error?.message, {
-        backgroundColor: "red",
-        textColor: "white",
-      });
-    }
-  };
   useEffect(() => {
-    const statusToken = async () => {
-      const data = await fetchToken();
-
-      if (data?.token !== "") {
-        fetchHalls();
-      }
-    };
-
-    statusToken();
-  }, [token]);
+    getHalls();
+  }, []);
 
   if (loading) {
     return (
@@ -76,7 +52,11 @@ const HallsScreen = () => {
         <Text className="text-xl font-bold text-center text-dark">
           Available Lecture Halls
         </Text>
-        <SearchBar placeholder="Search for a hall..." />
+        <SearchBar
+          placeholder="Search for a hall..."
+          lightTheme
+          className="rounded-lg"
+        />
       </View>
       {loading && <Text>Loading...</Text>}
       {!loading && halls.length > 0 && (

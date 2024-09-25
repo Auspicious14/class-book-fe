@@ -19,6 +19,7 @@ import SignUpScreen from "./auth/signup";
 import OnboardScreen from "./onboarding";
 // import { router } from "expo-router";
 import { fetchToken, isOnboardingComplete } from "../helper";
+import { AppContextProvider } from "../context";
 
 const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -63,117 +64,119 @@ export default function RootLayout() {
   }
 
   return (
-    <RootSiblingParent>
-      <ThemeProvider value={DefaultTheme}>
-        <Stack.Navigator>
-          {isFirstLaunch ? (
-            <>
-              <Stack.Screen
-                name="onboarding/index"
-                component={OnboardScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="auth/signup"
-                component={SignUpScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="auth/login"
-                component={LoginScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="hall/halls"
-                component={HallsScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="hall/create"
-                component={CreateHallScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="hall/booking"
-                component={BookingScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="+not-found"
-                component={NotFoundScreen}
-                options={{ headerShown: false }}
-              />
-            </>
-          ) : auth.token && auth.role === "admin" ? (
-            <>
-              <Stack.Screen
-                name="hall/halls"
-                component={HallsScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="hall/create"
-                component={CreateHallScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="hall/booking"
-                component={BookingScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="+not-found"
-                component={NotFoundScreen}
-                options={{ headerShown: false }}
-              />
-            </>
-          ) : auth.token && auth.role === "classRep" ? (
-            <>
-              <Stack.Screen
-                name="hall/halls"
-                component={HallsScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="bookHall"
-                component={BookingScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="+not-found"
-                component={NotFoundScreen}
-                options={{ headerShown: false }}
-              />
-            </>
-          ) : auth.token && auth.role === "student" ? (
-            <>
-              <Stack.Screen
-                name="hall/halls"
-                component={HallsScreen}
-                options={{ headerShown: false }}
-              />
-            </>
-          ) : (
-            <>
-              <Stack.Screen
-                name="auth/login"
-                component={LoginScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="auth/signup"
-                component={SignUpScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="+not-found"
-                component={NotFoundScreen}
-                options={{ headerShown: false }}
-              />
-            </>
-          )}
-        </Stack.Navigator>
-      </ThemeProvider>
-    </RootSiblingParent>
+    <AppContextProvider>
+      <RootSiblingParent>
+        <ThemeProvider value={DefaultTheme}>
+          <Stack.Navigator>
+            {isFirstLaunch ? (
+              <>
+                <Stack.Screen
+                  name="onboarding/index"
+                  component={OnboardScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="auth/signup"
+                  component={SignUpScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="auth/login"
+                  component={LoginScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="hall/halls"
+                  component={HallsScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="hall/create"
+                  component={CreateHallScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="hall/booking"
+                  component={BookingScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="+not-found"
+                  component={NotFoundScreen}
+                  options={{ headerShown: false }}
+                />
+              </>
+            ) : auth.token && auth.role === "admin" ? (
+              <>
+                <Stack.Screen
+                  name="hall/halls"
+                  component={HallsScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="hall/create"
+                  component={CreateHallScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="hall/booking"
+                  component={BookingScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="+not-found"
+                  component={NotFoundScreen}
+                  options={{ headerShown: false }}
+                />
+              </>
+            ) : auth.token && auth.role === "classRep" ? (
+              <>
+                <Stack.Screen
+                  name="hall/halls"
+                  component={HallsScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="bookHall"
+                  component={BookingScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="+not-found"
+                  component={NotFoundScreen}
+                  options={{ headerShown: false }}
+                />
+              </>
+            ) : auth.token && auth.role === "student" ? (
+              <>
+                <Stack.Screen
+                  name="hall/halls"
+                  component={HallsScreen}
+                  options={{ headerShown: false }}
+                />
+              </>
+            ) : (
+              <>
+                <Stack.Screen
+                  name="auth/login"
+                  component={LoginScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="auth/signup"
+                  component={SignUpScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="+not-found"
+                  component={NotFoundScreen}
+                  options={{ headerShown: false }}
+                />
+              </>
+            )}
+          </Stack.Navigator>
+        </ThemeProvider>
+      </RootSiblingParent>
+    </AppContextProvider>
   );
 }
