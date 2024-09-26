@@ -9,33 +9,34 @@ import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
-import { axiosApi } from "../../components/api";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
+import { fetchToken } from "../../helper";
+import { IHall } from "./model";
+import { useHallState } from "./context";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required("Hall Name is required"),
-  location: Yup.string().required("Locaion is required"),
+  location: Yup.string().required("Location is required"),
+  capacity: Yup.string().required("Capacity is required"),
+  description: Yup.string().required("Description is required"),
 });
 
 const CreateHallScreen = ({ route }: any) => {
-  const item = route?.params?.item || {};
-  const { _id = "", images = [], location = "", name = "" } = item;
-  const [loading, setLoading] = useState<boolean>(false);
+  const hall: IHall = route?.params?.hall || {};
+  const {
+    _id = "",
+    images = [],
+    location = "",
+    name = "",
+    description = "",
+    capacity = "",
+    available = false,
+  }: IHall = hall;
+
+  const { saveHall, loading } = useHallState();
   const [token, setToken] = useState<string>("");
   const [image, setImage] = useState<any>(images[0] || null);
-
-  const fetchToken = async () => {
-    try {
-      const storedToken = await AsyncStorage.getItem("secret");
-      if (storedToken) {
-        const parsed = JSON.parse(storedToken);
-        setToken(parsed.token);
-      }
-    } catch (error) {
-      console.error("Failed to fetch token", error);
-    }
-  };
 
   useEffect(() => {
     fetchToken();
@@ -78,67 +79,29 @@ const CreateHallScreen = ({ route }: any) => {
   };
 
   const handleSubmit = async (val: any, actions: any) => {
-    const { name, location } = val;
-    setLoading(true);
-    try {
-      const { api } = await axiosApi();
-      let response;
-      if (_id) {
-        response = await api.put("/update/hall", {
-          _id,
-          name,
-          location,
-          files: [image],
-        });
-      } else {
-        response = await api.post("/create/hall", {
-          name,
-          location,
-          files: [image],
-        });
+    saveHall({ _id, available: !available ? true : false, ...val }, image).then(
+      (res) => {
+        if (res) {
+          router.push("hall/halls");
+        }
       }
-
-      setLoading(false);
-
-      const data = await response.data;
-
-      if (data.message) {
-        Toast.show(data?.message, {
-          backgroundColor: "green",
-          textColor: "white",
-        });
-      }
-
-      if (data.data) {
-        actions.resetForm({
-          values: { name: "", location: "" },
-        });
-        router.push("hall/halls");
-      }
-
-      if (data.error) {
-        Toast.show(data.error, {
-          backgroundColor: "red",
-          textColor: "white",
-        });
-      }
-    } catch (error: any) {
-      Toast.show(error?.message, {
-        backgroundColor: "red",
-        textColor: "white",
-      });
-      setLoading(false);
-    }
+    );
   };
 
   return (
     <SafeAreaView>
-      <View className="p-8 h-full">
+      <View className="bg-secondary p-8 h-full">
         <Text className="text-center my-4 text-xl font-bold">
           {_id ? `Update ${name} Lecture Hall` : "Create a Lecture Hall"}
         </Text>
         <Formik
-          initialValues={{ name: name || "", location: location || "" }}
+          initialValues={{
+            name: name || "",
+            description: description || "",
+            location: location || "",
+            capacity: capacity || "",
+            // available: available || false,
+          }}
           validationSchema={FormSchema}
           onSubmit={handleSubmit}
         >
@@ -168,26 +131,54 @@ const CreateHallScreen = ({ route }: any) => {
               )}
               <Text className="my-2">Name</Text>
               <TextInput
-                className={"border p-2 mb-4 rounded-md border-gray-200"}
+                className={"border p-2 rounded-md border-gray-200"}
                 placeholder="Name"
                 value={values.name}
                 onBlur={handleBlur("name")}
                 onChangeText={handleChange("name")}
               />
-              <Text className="text-red-500">{errors.name as string}</Text>
+              <Text className={`text-red-500 ${errors.name && "my-2"}`}>
+                {errors.name as string}
+              </Text>
+              <Text className="my-2">Description</Text>
+              <TextInput
+                inputMode="text"
+                multiline
+                className={"border p-2 rounded-md border-gray-200"}
+                placeholder="Name"
+                value={values.description}
+                onBlur={handleBlur("description")}
+                onChangeText={handleChange("description")}
+              />
+              <Text className={`text-red-500 ${errors.description && "my-2"}`}>
+                {errors.description as string}
+              </Text>
+              <Text className="my-2">Capacity</Text>
+              <TextInput
+                className={"border p-2 rounded-md border-gray-200"}
+                placeholder="Name"
+                value={values.capacity}
+                onBlur={handleBlur("capacity")}
+                onChangeText={handleChange("capacity")}
+              />
+              <Text className={`text-red-500 ${errors.capacity && "my-2"}`}>
+                {errors.capacity as string}
+              </Text>
               <Text className="">Location</Text>
               <TextInput
-                className={"border p-2 mb-4 rounded-md border-gray-200"}
+                className={"border p-2 rounded-md border-gray-200"}
                 placeholder="Location"
                 value={values.location}
                 onBlur={handleBlur("location")}
                 onChangeText={handleChange("location")}
               />
-              <Text className="text-red-500">{errors.location as string}</Text>
+              <Text className={`text-red-500 ${errors.location && "my-2"}`}>
+                {errors.location as string}
+              </Text>
 
               <TouchableOpacity
                 disabled={loading}
-                className="border-none text-white rounded-xl p-3 flex justify-center items-center bg-blue-800"
+                className="border-none text-white rounded-xl p-3 flex justify-center items-center bg-primary"
                 onPress={() => handleSubmit()}
               >
                 <Text className="text-white ">

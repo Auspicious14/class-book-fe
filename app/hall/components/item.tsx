@@ -17,18 +17,14 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
   const navigation: any = useNavigation();
 
   return (
-    <View className="w-1/2 p-2">
+    <View className="w-1/2  p-2">
       <TouchableOpacity
-        className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72"
         onPress={() =>
-          navigation.navigate("hall/booking", {
-            hall: {
-              _id: hall._id,
-              name: hall.name,
-              location: hall.location,
-            },
+          navigation.navigate("hall/create", {
+            hall,
           })
         }
+        className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72"
       >
         <View className="relative w-full h-32">
           <Image
@@ -51,17 +47,23 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
           <Text
             className={`${hall?.available ? "text-primary" : "text-accent"}`}
           >
-            {hall.available ? "Available" : "Booked"}
+            {!hall.available ? "Available" : "Booked"}
           </Text>
         </View>
 
         <View className="p-3">
-          {hall.available ? (
+          {!hall.available ? (
             <TouchableOpacity
               className="bg-primary py-2 rounded-md items-center"
-              onPress={() => {
-                console.log(`Booking hall: ${hall.name}`);
-              }}
+              onPress={() =>
+                navigation.navigate("hall/booking", {
+                  hall: {
+                    _id: hall._id,
+                    name: hall.name,
+                    location: hall.location,
+                  },
+                })
+              }
             >
               <Text className="text-white font-bold">Book Now</Text>
             </TouchableOpacity>
