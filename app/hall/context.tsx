@@ -70,7 +70,6 @@ export const HallConextProvider: React.FC<IProps> = ({ children }) => {
         });
       }
       const data = await response.data;
-      console.log(data, "dataaa");
       if (data.message) {
         Toast.show(data?.message, {
           backgroundColor: "green",
