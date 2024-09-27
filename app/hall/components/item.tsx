@@ -47,21 +47,17 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
           <Text
             className={`${hall?.available ? "text-primary" : "text-accent"}`}
           >
-            {!hall.available ? "Available" : "Booked"}
+            {hall.available ? "Available" : "Booked"}
           </Text>
         </View>
 
         <View className="p-3">
-          {!hall.available ? (
+          {hall.available ? (
             <TouchableOpacity
               className="bg-primary py-2 rounded-md items-center"
               onPress={() =>
                 navigation.navigate("hall/booking", {
-                  hall: {
-                    _id: hall._id,
-                    name: hall.name,
-                    location: hall.location,
-                  },
+                  hall,
                 })
               }
             >

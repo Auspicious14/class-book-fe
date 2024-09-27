@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IHall, IImage } from "./model";
+import { IBookQuery, IHall, IImage } from "./model";
 import { axiosApi } from "../../components/api";
 import Toast from "react-native-root-toast";
 
@@ -8,6 +8,7 @@ interface IHallState {
   halls: IHall[];
   getHalls: () => Promise<void>;
   saveHall: (query: IHall, image: IImage) => Promise<any>;
+  bookHall: (hallId: string, query: IBookQuery) => Promise<any>;
 }
 
 const HallConext = React.createContext<IHallState>({
@@ -17,6 +18,9 @@ const HallConext = React.createContext<IHallState>({
     return null as never;
   },
   saveHall(query, image) {
+    return null as never;
+  },
+  bookHall(hallId, query) {
     return null as never;
   },
 });
@@ -94,6 +98,34 @@ export const HallConextProvider: React.FC<IProps> = ({ children }) => {
     }
   };
 
+  const bookHall = async (hallId: string, query: IBookQuery) => {
+    const { duration, ...vals } = query;
+    setLoading(true);
+    try {
+      const { api } = await axiosApi();
+      const res = await api.post(`/book/hall`, {
+        hallId,
+        duration: parseFloat(query.duration),
+        ...vals,
+      });
+
+      Toast.show(res?.data.message, {
+        backgroundColor: "green",
+        textColor: "white",
+      });
+
+      return res?.data;
+    } catch (error: any) {
+      setLoading(false);
+      Toast.show(error.response.data, {
+        backgroundColor: "red",
+        textColor: "white",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <HallConext.Provider
       value={{
@@ -101,6 +133,7 @@ export const HallConextProvider: React.FC<IProps> = ({ children }) => {
         halls,
         getHalls,
         saveHall,
+        bookHall,
       }}
     >
       {children}

@@ -13,3 +13,9 @@ export interface IImage {
   type: string;
   uri: string;
 }
+
+export interface IBookQuery {
+  bookedFrom: Date | string;
+  bookedTo: Date | string;
+  duration: string;
+}

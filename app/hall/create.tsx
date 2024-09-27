@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Formik } from "formik";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-root-toast";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as Yup from "yup";
-import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
-import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
-import * as FileSystem from "expo-file-system";
-import * as ImageManipulator from "expo-image-manipulator";
 import { fetchToken } from "../../helper";
 import { IHall } from "./model";
 import { useHallState } from "./context";
+import * as Yup from "yup";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import * as ImageManipulator from "expo-image-manipulator";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required("Hall Name is required"),
@@ -79,13 +76,11 @@ const CreateHallScreen = ({ route }: any) => {
   };
 
   const handleSubmit = async (val: any, actions: any) => {
-    saveHall({ _id, available: !available ? true : false, ...val }, image).then(
-      (res) => {
-        if (res) {
-          router.push("hall/halls");
-        }
+    saveHall({ _id, available, ...val }, image).then((res) => {
+      if (res) {
+        router.push("hall/halls");
       }
-    );
+    });
   };
 
   return (
