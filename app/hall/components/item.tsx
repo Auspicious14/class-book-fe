@@ -15,9 +15,12 @@ interface IProps {
 }
 export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
   const navigation: any = useNavigation();
+  const date = new Date();
+  const lastBooking = hall.bookings.findLast((b) => b);
+  // console.log((lastBooking!.bookedTo as string | Date) < date, "ll");
 
   return (
-    <View className="w-1/2  p-2">
+    <View className="w-1/2 p-2">
       <TouchableOpacity
         onPress={() =>
           navigation.navigate("hall/create", {
@@ -52,7 +55,10 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
         </View>
 
         <View className="p-3">
-          {hall.available ? (
+          {hall.available ||
+          (lastBooking &&
+            lastBooking.bookedTo &&
+            new Date(lastBooking.bookedTo) < date) ? (
             <TouchableOpacity
               className="bg-primary py-2 rounded-md items-center"
               onPress={() =>

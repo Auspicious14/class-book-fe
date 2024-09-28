@@ -6,6 +6,7 @@ export interface IHall {
   capacity: string;
   available: boolean;
   images: IImage[];
+  bookings: IBooking[];
 }
 
 export interface IImage {
@@ -15,6 +16,12 @@ export interface IImage {
 }
 
 export interface IBookQuery {
+  bookedFrom: Date | string;
+  bookedTo: Date | string;
+  duration: string;
+}
+
+export interface IBooking {
   bookedFrom: Date | string;
   bookedTo: Date | string;
   duration: string;
