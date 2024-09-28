@@ -21,6 +21,10 @@ export interface IBookQuery {
   duration: string;
 }
 
+export interface IHallQuery {
+  name?: string;
+  available?: boolean;
+}
 export interface IBooking {
   bookedFrom: Date | string;
   bookedTo: Date | string;

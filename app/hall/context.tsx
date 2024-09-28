@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { IBookQuery, IHall, IImage } from "./model";
+import { IBookQuery, IHall, IHallQuery, IImage } from "./model";
 import { axiosApi } from "../../components/api";
 import Toast from "react-native-root-toast";
 
 interface IHallState {
   loading: boolean;
   halls: IHall[];
-  getHalls: () => Promise<void>;
+  getHalls: (payload?: IHallQuery) => Promise<void>;
   saveHall: (query: IHall, image: IImage) => Promise<any>;
   bookHall: (hallId: string, query: IBookQuery) => Promise<any>;
 }
@@ -41,14 +41,19 @@ export const HallConextProvider: React.FC<IProps> = ({ children }) => {
   const [halls, setHalls] = useState<IHall[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const getHalls = async () => {
+  const getHalls = async (payload?: IHallQuery) => {
     setLoading(true);
+    const query = new URLSearchParams(payload as any).toString();
     try {
       const { api } = await axiosApi();
-      const response = await api.get("/halls");
+      const response = await api.get(`/halls?${query}`);
       setHalls(response.data?.data);
     } catch (error: any) {
       console.log("Error fetching favorites:", error);
+      Toast.show(error, {
+        textColor: "white",
+        backgroundColor: "red",
+      });
     } finally {
       setLoading(false);
     }

@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { IHall } from "./model";
+import { IHall, IHallQuery } from "./model";
 import { SearchBar } from "@rneui/themed";
 import { useHallState } from "./context";
 import { HallListItem } from "./components/item";
@@ -21,11 +21,12 @@ const screenHeight = Dimensions.get("window").height;
 
 const HallsScreen = () => {
   const { halls, getHalls, loading } = useHallState();
+  const [filter, setFilter] = useState<IHallQuery>();
   const navigation: any = useNavigation();
 
   useEffect(() => {
-    getHalls();
-  }, []);
+    getHalls(filter);
+  }, [filter]);
 
   if (loading) {
     return (
@@ -53,6 +54,7 @@ const HallsScreen = () => {
           placeholder="Search for a hall..."
           lightTheme
           className="rounded-lg "
+          onChangeText={(name) => setFilter({ ...filter, name })}
         />
       </View>
       {loading && <Text>Loading...</Text>}

@@ -1,13 +1,7 @@
-import { AntDesign } from "@expo/vector-icons";
 import React from "react";
 import { TouchableOpacity, View, Image, Dimensions, Text } from "react-native";
 import { IHall } from "../model";
-import { useRouter } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
-
-const numColumns = 2;
-const screenWidth = Dimensions.get("window").width;
-const columnWidth = screenWidth / numColumns;
 
 interface IProps {
   hall: IHall;
@@ -17,7 +11,6 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
   const navigation: any = useNavigation();
   const date = new Date();
   const lastBooking = hall.bookings.findLast((b) => b);
-  // console.log((lastBooking!.bookedTo as string | Date) < date, "ll");
 
   return (
     <View className="w-1/2 p-2">
