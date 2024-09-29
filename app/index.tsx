@@ -1,57 +1,120 @@
-import React from "react";
-import { View, Text, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link } from "expo-router";
+import { Link, router, useNavigation } from "expo-router";
+import { useProfileState } from "./profile/context";
+import { useHallState } from "./hall/context";
+import { HallListItem } from "./hall/components/item";
+import { AvailableHalls } from "./home/available";
+import { IHallQuery } from "./hall/model";
+import { HeroCarousel } from "./home/hero";
 
 const HomeScreen = () => {
+  const navigation: any = useNavigation();
+  const { getProfile, profile } = useProfileState();
+  const { getHalls, halls, loading } = useHallState();
+  const [filter, setFilter] = useState<IHallQuery>({ available: true });
+  useEffect(() => {
+    getProfile();
+    getHalls(filter);
+  }, [filter]);
+
   return (
     <SafeAreaView>
-      <View className={"p-8 bg-blue-800 flex justify-center h-full"}>
-        <View className="mb-8">
-          <Text className={"text-3xl mb-2 text-center text-white"}>
-            Welcome
-          </Text>
-          <Text className="text-white text-center">Tell us about you</Text>
+      <View className={"px-4 bg-secondary  h-full"}>
+        <View className="">
+          <Text
+            className={"text-xl mb-2 text-primary"}
+          >{`Welcome Back, ${profile.firstName}!`}</Text>
         </View>
-        <View className="flex flex-row gap-16 items-center justify-center">
-          <View className="flex flex-col justify-center items-center">
-            <Link href={{ pathname: "auth/signup", params: { role: "admin" } }}>
-              <View className="border rounded-xl p-4 border-white w-20 h-20 flex justify-center items-center">
-                <Image
-                  source={require("../assets/images/admin.png")}
-                  className="w-20 h-20 object-cover rounded-xl"
-                />
-              </View>
-            </Link>
-            <Text className="text-white mt-2">Admin</Text>
-          </View>
-          <View className="flex flex-col justify-center items-center">
-            <Link
-              href={{ pathname: "auth/signup", params: { role: "classRep" } }}
+
+        <HeroCarousel />
+        {/* <View className="flex-row justify-between my-4">
+          <TouchableOpacity
+            className="bg-primary p-4 rounded-md items-center"
+            onPress={() => navigation.navigate("hall/booking")}
+          >
+            <Image
+              source={require("../assets/images/Hotel Booking-pana.png")}
+              style={{ width: 40, height: 40, marginBottom: 8 }}
+              resizeMode="cover"
+            />
+            <Text className="text-white">Book a Hall</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="bg-primary p-4 rounded-md items-center"
+            onPress={() => navigation.navigate("profile/page")}
+          >
+            <Image
+              source={require("../assets/images/Profile pic-cuate.png")}
+              style={{ width: 40, height: 40, marginBottom: 8 }}
+              resizeMode="cover"
+            />
+            <Text className="text-white">View Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="bg-primary p-4 rounded-md items-center"
+            onPress={() => navigation.navigate("hall/page")}
+          >
+            <Image
+              source={require("../assets/images/Digital nomad-pana.png")}
+              style={{ width: 40, height: 40, marginBottom: 8 }}
+              resizeMode="cover"
+            />
+            <Text className="text-white">Explore Halls</Text>
+          </TouchableOpacity>
+        </View> */}
+
+        <View className="flex-row justify-between my-4">
+          {(profile?.role === "admin" || profile.role === "classRep") && (
+            <TouchableOpacity
+              className="items-center"
+              onPress={() => navigation.navigate("hall/create")}
             >
-              <View className="border rounded-xl p-4 border-white w-20 h-20 flex justify-center items-center">
-                <Image
-                  source={require("../assets/images/admin.png")}
-                  className="w-20 h-20 object-cover rounded-xl"
-                />
-              </View>
-            </Link>
-            <Text className="text-white mt-2">Rep</Text>
-          </View>
-          <View className="flex flex-col justify-center items-center">
-            <Link
-              href={{ pathname: "auth/signup", params: { role: "student" } }}
-            >
-              <View className="border rounded-xl border-white w-20 h-20 flex justify-center items-center">
-                <Image
-                  source={require("../assets/images/student.jpg")}
-                  className="w-20 h-20 object-cover rounded-xl"
-                />
-              </View>
-            </Link>
-            <Text className="text-white mt-2">Student</Text>
-          </View>
+              <Image
+                source={require("../assets/images/Hotel Booking-pana.png")}
+                className="w-28 h-28 rounded-xl"
+                resizeMode="cover"
+              />
+              <Text className="text-primary">Create a Hall</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity
+            className="items-center"
+            onPress={() => navigation.navigate("profile/page")}
+          >
+            <Image
+              source={require("../assets/images/Profile pic-cuate.png")}
+              className="w-28 h-28 rounded-xl"
+              resizeMode="cover"
+            />
+            <Text className="text-primary">View Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="items-center"
+            onPress={() => navigation.navigate("hall/page")}
+          >
+            <Image
+              source={require("../assets/images/Digital nomad-pana.png")}
+              className="w-28 h-28 rounded-xl"
+              resizeMode="cover"
+            />
+            <Text className="text-primary">Explore Halls</Text>
+          </TouchableOpacity>
         </View>
+
+        <AvailableHalls halls={halls} loading={loading} />
       </View>
     </SafeAreaView>
   );

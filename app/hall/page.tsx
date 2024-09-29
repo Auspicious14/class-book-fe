@@ -64,10 +64,12 @@ const HallsScreen = () => {
             borderStyle: "solid",
             borderWidth: 1,
           }}
+          value={filter?.name}
           onChangeText={(name) => setFilter({ ...filter, name })}
+          // onChange={(e) => setFilter({...filter, name: e.target.})}
         />
       </View>
-      {loading && <Text>Loading...</Text>}
+      {/* {loading && <Text>Loading...</Text>} */}
       {!loading && halls.length > 0 && (
         <View className="">
           <FlatList

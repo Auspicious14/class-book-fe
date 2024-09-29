@@ -1,30 +1,19 @@
 import React, { useState, useEffect } from "react";
 import {
-  DarkTheme,
   DefaultTheme,
   ThemeProvider,
   useNavigation,
 } from "@react-navigation/native";
-import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
+import { useFonts } from "expo-font";
 import { RootSiblingParent } from "react-native-root-siblings";
-import { createStackNavigator } from "@react-navigation/stack";
-import NotFoundScreen from "./+not-found";
-import LoginScreen from "./auth/login";
-import BookingScreen from "./hall/booking";
-import CreateHallScreen from "./hall/create";
-import HallsScreen from "./hall/page";
-import SignUpScreen from "./auth/signup";
-import OnboardScreen from "./onboarding";
-import ProfileScreen from "./profile/page";
-// import { router } from "expo-router";
-import { fetchToken, isOnboardingComplete } from "../helper";
-import { AppContextProvider } from "../context";
-import { Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Stack } from "expo-router/stack";
+import { fetchToken } from "../helper";
+import { AppContextProvider } from "../context";
+import { TouchableOpacity } from "react-native";
 
-const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -34,6 +23,7 @@ export default function RootLayout() {
     token: "",
     role: "",
   });
+
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/FiraCode-Regular.ttf"),
   });
@@ -53,14 +43,13 @@ export default function RootLayout() {
         setIsFirstLaunch(true);
         router.navigate("onboarding/index");
       }
-
-      if (loaded) {
-        SplashScreen.hideAsync();
-      }
     };
 
-    checkAuth();
-  }, [loaded, auth]);
+    if (loaded && !auth.token) {
+      checkAuth();
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, auth.token]);
 
   if (!loaded) {
     return null;
@@ -70,11 +59,10 @@ export default function RootLayout() {
     <AppContextProvider>
       <RootSiblingParent>
         <ThemeProvider value={DefaultTheme}>
-          <Stack.Navigator
+          <Stack
             screenOptions={{
               headerShown: true,
               title: "",
-              headerStatusBarHeight: 10,
               headerStyle: {
                 backgroundColor: "#4CAF50",
               },
@@ -97,64 +85,61 @@ export default function RootLayout() {
               <>
                 <Stack.Screen
                   name="onboarding/index"
-                  component={OnboardScreen}
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen
                   name="auth/signup"
-                  component={SignUpScreen}
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen
                   name="auth/login"
-                  component={LoginScreen}
                   options={{ headerShown: false }}
                 />
-                <Stack.Screen name="hall/page" component={HallsScreen} />
-                <Stack.Screen name="hall/create" component={CreateHallScreen} />
-                <Stack.Screen name="hall/booking" component={BookingScreen} />
-                <Stack.Screen name="+not-found" component={NotFoundScreen} />
+                <Stack.Screen name="hall/page" />
+                <Stack.Screen name="hall/create" />
+                <Stack.Screen name="hall/booking" />
+                <Stack.Screen name="+not-found" />
               </>
             ) : auth.token && auth.role === "admin" ? (
               <>
-                <Stack.Screen name="hall/page" component={HallsScreen} />
-                <Stack.Screen name="profile/page" component={ProfileScreen} />
-                <Stack.Screen name="hall/create" component={CreateHallScreen} />
-                <Stack.Screen name="hall/booking" component={BookingScreen} />
-                <Stack.Screen name="+not-found" component={NotFoundScreen} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="hall/page" />
+                <Stack.Screen name="hall/create" />
+                <Stack.Screen name="profile/page" />
+                <Stack.Screen name="hall/booking" />
+                <Stack.Screen name="+not-found" />
               </>
             ) : auth.token && auth.role === "classRep" ? (
               <>
-                <Stack.Screen name="hall/page" component={HallsScreen} />
-                <Stack.Screen name="bookHall" component={BookingScreen} />
-                <Stack.Screen name="profile/page" component={ProfileScreen} />
-                <Stack.Screen name="+not-found" component={NotFoundScreen} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="hall/page" />
+                <Stack.Screen name="bookHall" />
+                <Stack.Screen name="profile/page" />
+                <Stack.Screen name="+not-found" />
               </>
             ) : auth.token && auth.role === "student" ? (
               <>
-                <Stack.Screen name="hall/page" component={HallsScreen} />
-                <Stack.Screen name="profile/page" component={ProfileScreen} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="hall/page" />
+                <Stack.Screen name="profile/page" />
               </>
             ) : (
               <>
                 <Stack.Screen
                   name="auth/login"
-                  component={LoginScreen}
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen
                   name="auth/signup"
-                  component={SignUpScreen}
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen
                   name="+not-found"
-                  component={NotFoundScreen}
                   options={{ headerShown: false }}
                 />
               </>
             )}
-          </Stack.Navigator>
+          </Stack>
         </ThemeProvider>
       </RootSiblingParent>
     </AppContextProvider>
