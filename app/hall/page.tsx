@@ -43,13 +43,13 @@ const HallsScreen = () => {
 
   return (
     <SafeAreaView
-      className=" px-4 bg-secondary"
-      style={{ marginTop: StatusBar.currentHeight || 0 }}
+      className=" px-4 bg-secondary my-0"
+      // style={{ marginTop: -10 }}
     >
       <View>
-        <Text className="text-xl font-bold text-center text-dark">
+        {/* <Text className="text-xl font-bold text-center text-dark">
           Available Lecture Halls
-        </Text>
+        </Text> */}
         <SearchBar
           placeholder="Search for a hall..."
           lightTheme

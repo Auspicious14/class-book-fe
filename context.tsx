@@ -1,5 +1,6 @@
 import React, { FC, ComponentProps } from "react";
 import { HallConextProvider } from "./app/hall/context";
+import { ProfileContextProvider } from "./app/profile/context";
 
 export const combineContext = (...components: FC[]): FC<any> => {
   const CombinedComponent = components.reduce(
@@ -27,5 +28,5 @@ export const combineContext = (...components: FC[]): FC<any> => {
   return CombinedComponent;
 };
 
-const providers = [HallConextProvider] as any;
+const providers = [HallConextProvider, ProfileContextProvider] as any;
 export const AppContextProvider = combineContext(...providers);
