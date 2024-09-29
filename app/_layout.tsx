@@ -76,7 +76,7 @@ export default function RootLayout() {
               title: "",
               headerStatusBarHeight: 10,
               headerStyle: {
-                backgroundColor: "green",
+                backgroundColor: "#4CAF50",
               },
               headerRight: () => (
                 <TouchableOpacity
