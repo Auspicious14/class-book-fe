@@ -53,7 +53,17 @@ const HallsScreen = () => {
         <SearchBar
           placeholder="Search for a hall..."
           lightTheme
-          className="rounded-lg "
+          className="rounded-lg border-primary border"
+          containerStyle={{
+            backgroundColor: "transparent",
+            borderBlockColor: "transparent",
+            padding: 0,
+          }}
+          inputContainerStyle={{
+            backgroundColor: "transparent",
+            borderStyle: "solid",
+            borderWidth: 1,
+          }}
           onChangeText={(name) => setFilter({ ...filter, name })}
         />
       </View>
