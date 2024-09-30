@@ -31,7 +31,7 @@ const HomeScreen = () => {
       <View className={"px-4 bg-secondary  h-full"}>
         <View className="">
           <Text
-            className={"text-xl mb-2 text-primary"}
+            className={"text-xl mb-2 text-dark"}
           >{`Welcome Back, ${profile.firstName}!`}</Text>
         </View>
 
@@ -85,7 +85,7 @@ const HomeScreen = () => {
                 className="w-28 h-28 rounded-xl"
                 resizeMode="cover"
               />
-              <Text className="text-primary">Create a Hall</Text>
+              <Text className="text-dark">Create a Hall</Text>
             </TouchableOpacity>
           )}
 
@@ -98,7 +98,7 @@ const HomeScreen = () => {
               className="w-28 h-28 rounded-xl"
               resizeMode="cover"
             />
-            <Text className="text-primary">View Profile</Text>
+            <Text className="text-dark">View Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -110,7 +110,7 @@ const HomeScreen = () => {
               className="w-28 h-28 rounded-xl"
               resizeMode="cover"
             />
-            <Text className="text-primary">Explore Halls</Text>
+            <Text className="text-dark">Explore Halls</Text>
           </TouchableOpacity>
         </View>
 

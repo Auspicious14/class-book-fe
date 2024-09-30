@@ -16,7 +16,9 @@ export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
   };
   return (
     <View>
-      <Text className="font-bold text-lg">Available Halls for you</Text>
+      <Text className="font-bold text-dark text-lg">
+        Available Halls for you
+      </Text>
       {!loading && halls.length > 0 && (
         <View className="py-4">
           <FlatList
@@ -45,7 +47,9 @@ export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
 
                   <View className="p-3 flex-1">
                     <View className="flex flex-row justify-between items-center">
-                      <Text className="text-lg font-bold">{item?.name}</Text>
+                      <Text className="text-lg text-dark font-bold">
+                        {item?.name}
+                      </Text>
                       <Text
                         className={`${
                           item?.available ? "text-primary" : "text-accent"
