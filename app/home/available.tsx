@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, TouchableOpacity, View, Text, Image } from "react-native";
 import { IHall } from "../hall/model";
-import { useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 
 interface IProps {
   halls: IHall[];
@@ -9,6 +9,7 @@ interface IProps {
 }
 export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
   const navigation: any = useNavigation();
+  const router = useRouter();
   const date = new Date();
   const lastBooking = (item: IHall) => {
     const lastBooking = item.bookings.findLast((b) => b);
@@ -47,7 +48,12 @@ export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
 
                   <View className="p-3 flex-1">
                     <View className="flex flex-row justify-between items-center">
-                      <Text className="text-lg text-dark font-bold">
+                      <Text
+                        className="te
+                      
+                      
+                      xt-lg text-dark font-bold"
+                      >
                         {item?.name}
                       </Text>
                       <Text
@@ -69,8 +75,12 @@ export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
                       <TouchableOpacity
                         className="bg-primary py-2 rounded-md items-center"
                         onPress={() =>
-                          navigation.navigate("item/booking", {
-                            item,
+                          router.push({
+                            pathname: "hall/booking",
+                            params: {
+                              _id: item._id,
+                              name: item.name,
+                            },
                           })
                         }
                       >

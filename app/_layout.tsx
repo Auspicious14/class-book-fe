@@ -62,10 +62,13 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShown: true,
+              statusBarColor: "#4CAF50",
+              statusBarStyle: "auto",
               title: "",
               headerStyle: {
                 backgroundColor: "#4CAF50",
               },
+
               headerRight: () => (
                 <TouchableOpacity
                   onPress={() => router.navigate("profile/page")}
@@ -102,7 +105,10 @@ export default function RootLayout() {
               </>
             ) : auth.token && auth.role === "admin" ? (
               <>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="(tabs)/_layout"
+                  options={{ headerShown: false }}
+                />
                 <Stack.Screen name="hall/page" />
                 <Stack.Screen name="hall/create" />
                 <Stack.Screen name="profile/page" />
@@ -111,7 +117,10 @@ export default function RootLayout() {
               </>
             ) : auth.token && auth.role === "classRep" ? (
               <>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="(tabs)/_layout"
+                  options={{ headerShown: false }}
+                />
                 <Stack.Screen name="hall/page" />
                 <Stack.Screen name="bookHall" />
                 <Stack.Screen name="profile/page" />
@@ -119,7 +128,10 @@ export default function RootLayout() {
               </>
             ) : auth.token && auth.role === "student" ? (
               <>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="(tabs)/_layout"
+                  options={{ headerShown: false }}
+                />
                 <Stack.Screen name="hall/page" />
                 <Stack.Screen name="profile/page" />
               </>

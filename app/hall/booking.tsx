@@ -4,22 +4,18 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
-  Platform,
-  Modal,
   TextInput,
-  Button,
+  ActivityIndicator,
 } from "react-native";
 import { Formik } from "formik";
 import { useHallState } from "./context";
-import { router } from "expo-router";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { router, useLocalSearchParams } from "expo-router";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-import { IHall } from "./model";
-
 const BookingScreen: React.FC = ({ route }: any) => {
-  const hall: IHall = route?.params?.hall || {};
-  const { _id = "", name = "" }: IHall = hall;
+  const hall = useLocalSearchParams();
+
+  const { _id = "", name = "" }: any = hall;
   const { bookHall, loading } = useHallState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [pickerType, setPickerType] = useState<string | null>(null);
@@ -152,10 +148,13 @@ const BookingScreen: React.FC = ({ route }: any) => {
             </View>
 
             <TouchableOpacity
+              disabled={loading}
               className="border-none text-white rounded-xl p-3 flex justify-center items-center bg-primary"
               onPress={() => handleSubmit(values)}
             >
-              <Text className="text-white">Book Hall</Text>
+              <Text className="text-white">
+                {loading ? <ActivityIndicator /> : " Book Hall"}
+              </Text>
             </TouchableOpacity>
 
             <DateTimePickerModal
