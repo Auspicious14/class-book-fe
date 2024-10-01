@@ -34,7 +34,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     const initializeApp = async () => {
-      // Step 1: Check authentication status
       const authStatus = await fetchToken();
 
       if (authStatus) {
@@ -62,16 +61,15 @@ export default function RootLayout() {
         }
       }
 
-      // Step 3: Get the push token and send to the server
       const token = (await Notifications.getExpoPushTokenAsync()).data;
       setPushToken(token);
       console.log(token);
-      addPushTokenToUser(authStatus.token, token); // Use the token from authStatus
+      addPushTokenToUser(authStatus.token, token);
     };
 
     if (loaded && !auth.token) {
       initializeApp();
-      SplashScreen.hideAsync(); // Hide splash screen when everything is initialized
+      SplashScreen.hideAsync();
     }
   }, [loaded]);
 
@@ -79,10 +77,6 @@ export default function RootLayout() {
     return null;
   }
 
-  // useEffect(() => {
-  //   if (!auth.token) return;
-
-  // }, []);
   return (
     <AppContextProvider>
       <RootSiblingParent>
