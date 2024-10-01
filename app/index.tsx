@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router, useNavigation } from "expo-router";
@@ -21,17 +22,29 @@ const HomeScreen = () => {
   const { getProfile, profile } = useProfileState();
   const { getHalls, halls, loading } = useHallState();
   const [filter, setFilter] = useState<IHallQuery>({ available: true });
+
   useEffect(() => {
     getProfile();
     getHalls(filter);
   }, [filter]);
+
+  if (loading) {
+    return (
+      <ActivityIndicator
+        size="large"
+        color="#9C27B0"
+        style={{ flex: 1, justifyContent: "center" }}
+      />
+    );
+  }
 
   return (
     <SafeAreaView>
       <View className={"px-4 bg-secondary  h-full"}>
         <View className="">
           <Text
-            className={"text-xl mb-2 text-dark"}
+            // style={{ fontFamily: "FiraCode-Regular", fontWeight: "bold" }}
+            className={"text-xl mb-2 text-dark "}
           >{`Welcome Back, ${profile.firstName}!`}</Text>
         </View>
 

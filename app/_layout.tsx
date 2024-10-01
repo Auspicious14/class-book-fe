@@ -12,13 +12,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { Stack } from "expo-router/stack";
 import { fetchToken } from "../helper";
 import { AppContextProvider } from "../context";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Platform } from "react-native";
+import * as Notifications from "expo-notifications";
+import { useHomeState } from "./home/context";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const router: any = useNavigation();
+  const { addPushTokenToUser } = useHomeState();
   const [isFirstLaunch, setIsFirstLaunch] = useState(false);
+  const [pushToken, setPushToken] = useState<string | null>(null);
   const [auth, setAuth] = useState<{ token: string; role: string }>({
     token: "",
     role: "",
@@ -29,7 +33,8 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const initializeApp = async () => {
+      // Step 1: Check authentication status
       const authStatus = await fetchToken();
 
       if (authStatus) {
@@ -42,19 +47,42 @@ export default function RootLayout() {
       } else {
         setIsFirstLaunch(true);
         router.navigate("onboarding/index");
+        return;
       }
+
+      const { status } = await Notifications.getPermissionsAsync();
+      console.log(status, "status");
+      if (status !== "granted") {
+        const { status: newStatus } =
+          await Notifications.requestPermissionsAsync();
+
+        if (newStatus !== "granted") {
+          console.log("Push notification permission denied");
+          return;
+        }
+      }
+
+      // Step 3: Get the push token and send to the server
+      const token = (await Notifications.getExpoPushTokenAsync()).data;
+      setPushToken(token);
+      console.log(token);
+      addPushTokenToUser(authStatus.token, token); // Use the token from authStatus
     };
 
     if (loaded && !auth.token) {
-      checkAuth();
-      SplashScreen.hideAsync();
+      initializeApp();
+      SplashScreen.hideAsync(); // Hide splash screen when everything is initialized
     }
-  }, [loaded, auth.token]);
+  }, [loaded]);
 
   if (!loaded) {
     return null;
   }
 
+  // useEffect(() => {
+  //   if (!auth.token) return;
+
+  // }, []);
   return (
     <AppContextProvider>
       <RootSiblingParent>
@@ -99,6 +127,7 @@ export default function RootLayout() {
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen name="hall/page" />
+                <Stack.Screen name="hall/detail" />
                 <Stack.Screen name="hall/create" />
                 <Stack.Screen name="hall/booking" />
                 <Stack.Screen name="+not-found" />
@@ -110,6 +139,7 @@ export default function RootLayout() {
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen name="hall/page" />
+                <Stack.Screen name="hall/detail" />
                 <Stack.Screen name="hall/create" />
                 <Stack.Screen name="profile/page" />
                 <Stack.Screen name="hall/booking" />
@@ -122,7 +152,7 @@ export default function RootLayout() {
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen name="hall/page" />
-                <Stack.Screen name="bookHall" />
+                <Stack.Screen name="hall/booking" />
                 <Stack.Screen name="profile/page" />
                 <Stack.Screen name="+not-found" />
               </>
@@ -133,6 +163,7 @@ export default function RootLayout() {
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen name="hall/page" />
+                <Stack.Screen name="hall/detail" />
                 <Stack.Screen name="profile/page" />
               </>
             ) : (

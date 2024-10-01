@@ -73,7 +73,7 @@ const BookingScreen: React.FC = ({ route }: any) => {
       duration,
     }).then((res) => {
       if (res) {
-        router.push("hall/halls");
+        router.push("hall/page");
       }
     });
   };

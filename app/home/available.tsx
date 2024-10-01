@@ -1,20 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, TouchableOpacity, View, Text, Image } from "react-native";
 import { IHall } from "../hall/model";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import { fetchToken } from "../../helper";
 
 interface IProps {
   halls: IHall[];
   loading: boolean;
 }
 export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
-  const navigation: any = useNavigation();
   const router = useRouter();
-  const date = new Date();
-  const lastBooking = (item: IHall) => {
-    const lastBooking = item.bookings.findLast((b) => b);
-    return lastBooking;
-  };
+  const [role, setRole] = useState<string>("");
+
+  useEffect(() => {
+    const authStatus = async () => {
+      const auth = await fetchToken();
+      setRole(auth?.role);
+    };
+    authStatus();
+  }, []);
+
+  console.log(role, "rrolee");
+
   return (
     <View>
       <Text className="font-bold text-dark text-lg">
@@ -84,12 +91,15 @@ export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
                   </View>
 
                   <View className="p-3">
-                    {item.available && (
+                    {
                       <TouchableOpacity
                         className="bg-primary py-2 rounded-md items-center"
                         onPress={() =>
                           router.push({
-                            pathname: "hall/booking",
+                            pathname:
+                              item.available && role !== "student"
+                                ? "hall/booking"
+                                : "hall/detail",
                             params: {
                               _id: item._id,
                               name: item.name,
@@ -97,9 +107,13 @@ export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
                           })
                         }
                       >
-                        <Text className="text-white font-bold">Book Now</Text>
+                        <Text className="text-white font-bold">
+                          {item.available && role !== "student"
+                            ? "Book Now"
+                            : "Detail"}
+                        </Text>
                       </TouchableOpacity>
-                    )}
+                    }
                   </View>
                 </TouchableOpacity>
               </View>
