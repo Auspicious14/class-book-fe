@@ -31,7 +31,20 @@ export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
             renderItem={({ item }) => (
               <View className="mr-4 w-64">
                 <TouchableOpacity
-                  onPress={() => {}}
+                  onPress={() =>
+                    router.push({
+                      pathname: "hall/create",
+                      params: {
+                        _id: item._id,
+                        name: item.name,
+                        location: item.location,
+                        capacity: item.capacity,
+                        images: JSON.stringify(item.images),
+                        description: item.description,
+                        available: item.available.toString(),
+                      },
+                    })
+                  }
                   className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72"
                 >
                   <View className="relative w-full h-32">

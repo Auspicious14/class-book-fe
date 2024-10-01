@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import { fetchToken } from "../../helper";
 import { IHall } from "./model";
@@ -20,7 +20,8 @@ const FormSchema = Yup.object().shape({
 });
 
 const CreateHallScreen = ({ route }: any) => {
-  const hall: IHall = route?.params?.hall || {};
+  // const hall: IHall = route?.params?.hall || {};
+  const hall: any = useLocalSearchParams();
   const {
     _id = "",
     images = [],
@@ -29,11 +30,12 @@ const CreateHallScreen = ({ route }: any) => {
     description = "",
     capacity = "",
     available = false,
-  }: IHall = hall;
+  } = hall;
+  const parsedImages = JSON.parse(images);
 
   const { saveHall, loading } = useHallState();
   const [token, setToken] = useState<string>("");
-  const [image, setImage] = useState<any>(images[0] || null);
+  const [image, setImage] = useState<any>(parsedImages[0] || null);
 
   useEffect(() => {
     fetchToken();

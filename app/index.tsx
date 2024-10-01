@@ -75,7 +75,7 @@ const HomeScreen = () => {
         </View> */}
 
         <View className="flex-row justify-between my-4">
-          {(profile?.role === "admin" || profile.role === "classRep") && (
+          {profile?.role === "admin" && (
             <TouchableOpacity
               className="items-center"
               onPress={() => navigation.navigate("hall/create")}

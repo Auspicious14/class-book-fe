@@ -2,6 +2,7 @@ import React from "react";
 import { TouchableOpacity, View, Image, Dimensions, Text } from "react-native";
 import { IHall } from "../model";
 import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 interface IProps {
   hall: IHall;
@@ -9,6 +10,7 @@ interface IProps {
 }
 export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
   const navigation: any = useNavigation();
+  const router = useRouter();
   const date = new Date();
   const lastBooking = hall.bookings.findLast((b) => b);
 
@@ -16,8 +18,17 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
     <View className="w-1/2 p-2">
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate("hall/create", {
-            hall,
+          router.push({
+            pathname: "hall/create",
+            params: {
+              _id: hall._id,
+              name: hall.name,
+              location: hall.location,
+              capacity: hall.capacity,
+              images: JSON.stringify(hall.images),
+              description: hall.description,
+              available: hall.available.toString(),
+            },
           })
         }
         className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72"
