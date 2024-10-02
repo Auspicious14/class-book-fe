@@ -305,38 +305,41 @@ const MainAppStack = ({ auth }: { auth?: IAuthProps }) => {
     return null;
   }
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      {auth.token ? (
-        <>
-          {auth.role === "admin" && (
-            <Stack.Screen name="AdminTabs" component={AdminTabs} />
-          )}
-          {auth.role === "classRep" && (
-            <Stack.Screen name="ClassRepTabs" component={ClassRepTabs} />
-          )}
-          {auth.role === "student" && (
-            <Stack.Screen name="StudentTabs" component={StudentTabs} />
-          )}
-        </>
-      ) : (
-        <>
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Signup"
-            component={SignUpScreen}
-            options={{ headerShown: false }}
-          />
-        </>
-      )}
-    </Stack.Navigator>
+    <>
+      <StatusBar backgroundColor="white" barStyle="dark-content" />
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        {auth.token ? (
+          <>
+            {auth.role === "admin" && (
+              <Stack.Screen name="AdminTabs" component={AdminTabs} />
+            )}
+            {auth.role === "classRep" && (
+              <Stack.Screen name="ClassRepTabs" component={ClassRepTabs} />
+            )}
+            {auth.role === "student" && (
+              <Stack.Screen name="StudentTabs" component={StudentTabs} />
+            )}
+          </>
+        ) : (
+          <>
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={SignUpScreen}
+              options={{ headerShown: false }}
+            />
+          </>
+        )}
+      </Stack.Navigator>
+    </>
   );
 };
 
@@ -344,7 +347,7 @@ const AdminTabs = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="HomePage"
+        name="Home"
         component={HomeScreen}
         options={{
           headerShown: false,
@@ -357,6 +360,7 @@ const AdminTabs = () => {
         name="HallPage"
         component={HallsScreen}
         options={{
+          headerShown: false,
           tabBarIcon: () => (
             <Ionicons name="list" size={24} color={"#4CAF50"} />
           ),
@@ -366,6 +370,7 @@ const AdminTabs = () => {
         name="CreateHall"
         component={CreateHallScreen}
         options={{
+          headerShown: false,
           tabBarIcon: () => (
             <Ionicons name="add-circle" size={24} color={"#4CAF50"} />
           ),
@@ -375,6 +380,7 @@ const AdminTabs = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
+          headerShown: false,
           tabBarIcon: () => (
             <Ionicons name="person" size={24} color={"#4CAF50"} />
           ),
@@ -391,6 +397,7 @@ const ClassRepTabs = () => {
         name="HallPage"
         component={HallsScreen}
         options={{
+          headerShown: false,
           tabBarIcon: () => (
             <Ionicons name="home" size={24} color={"#4CAF50"} />
           ),
@@ -400,6 +407,7 @@ const ClassRepTabs = () => {
         name="BookHall"
         component={BookingScreen}
         options={{
+          headerShown: false,
           tabBarIcon: () => (
             <Ionicons name="book" size={24} color={"#4CAF50"} />
           ),
@@ -409,6 +417,7 @@ const ClassRepTabs = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
+          headerShown: false,
           tabBarIcon: () => (
             <Ionicons name="person" size={24} color={"#4CAF50"} />
           ),
@@ -424,12 +433,18 @@ const StudentTabs = () => {
       <Tab.Screen
         name="HallPage"
         component={HallsScreen}
-        options={{ tabBarIcon: () => <Ionicons name="home" size={24} /> }}
+        options={{
+          headerShown: false,
+          tabBarIcon: () => <Ionicons name="home" size={24} />,
+        }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ tabBarIcon: () => <Ionicons name="person" size={24} /> }}
+        options={{
+          headerShown: false,
+          tabBarIcon: () => <Ionicons name="person" size={24} />,
+        }}
       />
     </Tab.Navigator>
   );

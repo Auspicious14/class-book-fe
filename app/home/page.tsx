@@ -41,7 +41,7 @@ const HomeScreen = () => {
           {profile?.role === "admin" && (
             <TouchableOpacity
               className="items-center"
-              onPress={() => navigation.navigate("hall/create")}
+              onPress={() => navigation.navigate("CreateHall")}
             >
               <Image
                 source={require("../../assets/images/Hotel Booking-pana.png")}
@@ -54,7 +54,7 @@ const HomeScreen = () => {
 
           <TouchableOpacity
             className="items-center"
-            onPress={() => navigation.navigate("profile/page")}
+            onPress={() => navigation.navigate("Profile")}
           >
             <Image
               source={require("../../assets/images/Profile pic-cuate.png")}
@@ -66,7 +66,7 @@ const HomeScreen = () => {
 
           <TouchableOpacity
             className="items-center"
-            onPress={() => navigation.navigate("hall/page")}
+            onPress={() => navigation.navigate("HallPage")}
           >
             <Image
               source={require("../../assets/images/Digital nomad-pana.png")}
