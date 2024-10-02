@@ -18,6 +18,7 @@ import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
+import { useRoute } from "@react-navigation/native";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required("Hall Name is required"),
@@ -26,8 +27,11 @@ const FormSchema = Yup.object().shape({
   description: Yup.string().required("Description is required"),
 });
 
-const CreateHallScreen = ({ route }: any) => {
-  const hall: IHall = route?.params?.item || {};
+const CreateHallScreen = () => {
+  // const hall: IHall = route?.params?.item || {};
+  const route = useRoute();
+  const { item }: any = route.params; // Get the hall data passed in
+
   const {
     _id = "",
     images = [],
@@ -36,7 +40,7 @@ const CreateHallScreen = ({ route }: any) => {
     description = "",
     capacity = "",
     available = false,
-  } = hall;
+  } = item;
 
   const { saveHall, loading } = useHallState();
   const [token, setToken] = useState<string>("");
