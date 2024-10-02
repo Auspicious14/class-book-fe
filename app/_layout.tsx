@@ -232,6 +232,7 @@ import CreateHallScreen from "./hall/create";
 import ProfileScreen from "./profile/page";
 import BookingScreen from "./hall/booking";
 import HomeScreen from "./home/page";
+import { HallDetailScreen } from "./hall/detail";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -315,13 +316,19 @@ const MainAppStack = ({ auth }: { auth?: IAuthProps }) => {
         {auth.token ? (
           <>
             {auth.role === "admin" && (
-              <Stack.Screen name="AdminTabs" component={AdminTabs} />
+              <>
+                <Stack.Screen name="AdminTabs" component={AdminTabs} />
+                <Stack.Screen name="BookHall" component={BookingScreen} />
+              </>
             )}
             {auth.role === "classRep" && (
               <Stack.Screen name="ClassRepTabs" component={ClassRepTabs} />
             )}
             {auth.role === "student" && (
-              <Stack.Screen name="StudentTabs" component={StudentTabs} />
+              <>
+                <Stack.Screen name="StudentTabs" component={StudentTabs} />
+                <Stack.Screen name="HallDetail" component={HallDetailScreen} />
+              </>
             )}
           </>
         ) : (
@@ -345,48 +352,61 @@ const MainAppStack = ({ auth }: { auth?: IAuthProps }) => {
 
 const AdminTabs = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: () => (
-            <Ionicons name="home" size={24} color={"#4CAF50"} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="HallPage"
-        component={HallsScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: () => (
-            <Ionicons name="list" size={24} color={"#4CAF50"} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="CreateHall"
-        component={CreateHallScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: () => (
-            <Ionicons name="add-circle" size={24} color={"#4CAF50"} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: () => (
-            <Ionicons name="person" size={24} color={"#4CAF50"} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+    <>
+      <StatusBar backgroundColor="white" barStyle="dark-content" />
+      <Tab.Navigator>
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            headerShown: false,
+            tabBarIcon: () => (
+              <Ionicons name="home" size={24} color={"#4CAF50"} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="HallPage"
+          component={HallsScreen}
+          options={{
+            headerShown: false,
+            tabBarIcon: () => (
+              <Ionicons name="list" size={24} color={"#4CAF50"} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="CreateHall"
+          component={CreateHallScreen}
+          options={{
+            headerShown: false,
+            tabBarIcon: () => (
+              <Ionicons name="add-circle" size={24} color={"#4CAF50"} />
+            ),
+          }}
+        />
+        {/* <Tab.Screen
+          name="BookHall"
+          component={BookingScreen}
+          options={{
+            headerShown: false,
+            tabBarIcon: () => (
+              <Ionicons name="book" size={24} color={"#4CAF50"} />
+            ),
+          }}
+        /> */}
+        <Tab.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            headerShown: false,
+            tabBarIcon: () => (
+              <Ionicons name="person" size={24} color={"#4CAF50"} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </>
   );
 };
 

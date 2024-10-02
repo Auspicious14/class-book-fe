@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
-import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  StatusBar,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
@@ -20,8 +27,7 @@ const FormSchema = Yup.object().shape({
 });
 
 const CreateHallScreen = ({ route }: any) => {
-  // const hall: IHall = route?.params?.hall || {};
-  const hall: any = useLocalSearchParams();
+  const hall: IHall = route?.params?.item || {};
   const {
     _id = "",
     images = [],
@@ -31,15 +37,15 @@ const CreateHallScreen = ({ route }: any) => {
     capacity = "",
     available = false,
   } = hall;
-  const parsedImages = JSON.parse(images);
 
   const { saveHall, loading } = useHallState();
   const [token, setToken] = useState<string>("");
-  const [image, setImage] = useState<any>(parsedImages[0] || null);
+  const [image, setImage] = useState<any>(images[0] || null);
 
   useEffect(() => {
     fetchToken();
-  }, [token]);
+    StatusBar.setBarStyle("light-content");
+  }, [token, StatusBar]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({

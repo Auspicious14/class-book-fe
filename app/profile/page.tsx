@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Dimensions,
   SafeAreaView,
+  StatusBar,
   Text,
   View,
 } from "react-native";
@@ -15,6 +16,7 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     getProfile();
+    StatusBar.setBarStyle("light-content");
   }, []);
 
   if (loading) {

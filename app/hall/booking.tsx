@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,19 +6,25 @@ import {
   SafeAreaView,
   TextInput,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import { Formik } from "formik";
 import { useHallState } from "./context";
 import { router, useLocalSearchParams } from "expo-router";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { IHall } from "./model";
 
 const BookingScreen: React.FC = ({ route }: any) => {
-  const hall = useLocalSearchParams();
+  const hall: IHall = route?.params?.item || {};
 
   const { _id = "", name = "" }: any = hall;
   const { bookHall, loading } = useHallState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [pickerType, setPickerType] = useState<string | null>(null);
+
+  useEffect(() => {
+    StatusBar.setBarStyle("light-content");
+  }, []);
 
   const handeShowDatePicker = (type: string) => {
     setPickerType(type);

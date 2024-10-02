@@ -3,13 +3,14 @@ import { FlatList, TouchableOpacity, View, Text, Image } from "react-native";
 import { IHall } from "../hall/model";
 import { useRouter } from "expo-router";
 import { fetchToken } from "../../helper";
+import { useNavigation } from "@react-navigation/native";
 
 interface IProps {
   halls: IHall[];
   loading: boolean;
 }
 const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
-  const router = useRouter();
+  const navigation: any = useNavigation();
   const [role, setRole] = useState<string>("");
 
   useEffect(() => {
@@ -39,18 +40,14 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
               <View className="mr-4 w-64">
                 <TouchableOpacity
                   onPress={() =>
-                    router.push({
-                      pathname: "hall/create",
-                      params: {
-                        _id: item._id,
-                        name: item.name,
-                        location: item.location,
-                        capacity: item.capacity,
-                        images: JSON.stringify(item.images),
-                        description: item.description,
-                        available: item.available.toString(),
-                      },
-                    })
+                    navigation.navigate(
+                      role === "admin"
+                        ? "CreateHall"
+                        : role === "student"
+                        ? "HallDetail"
+                        : "",
+                      { item }
+                    )
                   }
                   className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72"
                 >
@@ -95,16 +92,12 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
                       <TouchableOpacity
                         className="bg-primary py-2 rounded-md items-center"
                         onPress={() =>
-                          router.push({
-                            pathname:
-                              item.available && role !== "student"
-                                ? "hall/booking"
-                                : "hall/detail",
-                            params: {
-                              _id: item._id,
-                              name: item.name,
-                            },
-                          })
+                          navigation.navigate(
+                            item.available && role !== "student"
+                              ? "BookHall"
+                              : "HallDetail",
+                            { item }
+                          )
                         }
                       >
                         <Text className="text-white font-bold">

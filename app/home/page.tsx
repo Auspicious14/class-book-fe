@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router, useNavigation } from "expo-router";
@@ -24,6 +25,7 @@ const HomeScreen = () => {
   useEffect(() => {
     getProfile();
     getHalls(filter);
+    StatusBar.setBarStyle("light-content");
   }, [filter]);
 
   return (

@@ -26,6 +26,7 @@ const HallsScreen = () => {
 
   useEffect(() => {
     getHalls(filter);
+    StatusBar.setBarStyle("light-content");
   }, [filter]);
 
   if (loading) {
