@@ -252,7 +252,6 @@ export default function App() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/FiraCode-Regular.ttf"),
   });
-  console.log(auth, "aaaa");
   useEffect(() => {
     const initializeApp = async () => {
       const authStatus = await fetchToken();
