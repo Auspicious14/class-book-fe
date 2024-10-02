@@ -9,12 +9,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router, useNavigation } from "expo-router";
-import { useProfileState } from "./profile/context";
-import { useHallState } from "./hall/context";
-import { HallListItem } from "./hall/components/item";
-import { AvailableHalls } from "./home/available";
-import { IHallQuery } from "./hall/model";
-import { HeroCarousel } from "./home/hero";
+import { useHallState } from "../hall/context";
+import { IHallQuery } from "../hall/model";
+import { useProfileState } from "../profile/context";
+import AvailableHalls from "./available";
+import HeroCarousel from "./hero";
 
 const HomeScreen = () => {
   const navigation: any = useNavigation();
@@ -32,7 +31,7 @@ const HomeScreen = () => {
       <View className={"px-4 bg-secondary  h-full"}>
         <View className="">
           <Text
-            className={"text-xl mb-2 text-dark "}
+            className={"text-xl my-2 text-dark "}
           >{`Welcome Back, ${profile.firstName}!`}</Text>
         </View>
 
@@ -45,7 +44,7 @@ const HomeScreen = () => {
               onPress={() => navigation.navigate("hall/create")}
             >
               <Image
-                source={require("../assets/images/Hotel Booking-pana.png")}
+                source={require("../../assets/images/Hotel Booking-pana.png")}
                 className="w-28 h-28 rounded-xl"
                 resizeMode="cover"
               />
@@ -58,7 +57,7 @@ const HomeScreen = () => {
             onPress={() => navigation.navigate("profile/page")}
           >
             <Image
-              source={require("../assets/images/Profile pic-cuate.png")}
+              source={require("../../assets/images/Profile pic-cuate.png")}
               className="w-28 h-28 rounded-xl"
               resizeMode="cover"
             />
@@ -70,7 +69,7 @@ const HomeScreen = () => {
             onPress={() => navigation.navigate("hall/page")}
           >
             <Image
-              source={require("../assets/images/Digital nomad-pana.png")}
+              source={require("../../assets/images/Digital nomad-pana.png")}
               className="w-28 h-28 rounded-xl"
               resizeMode="cover"
             />

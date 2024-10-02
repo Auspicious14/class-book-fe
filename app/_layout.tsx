@@ -218,7 +218,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as SplashScreen from "expo-splash-screen";
-import { ActivityIndicator, TouchableOpacity } from "react-native";
+import { ActivityIndicator, StatusBar, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { fetchToken } from "../helper";
 import { AppContextProvider } from "../context";
@@ -231,6 +231,7 @@ import HallsScreen from "./hall/page";
 import CreateHallScreen from "./hall/create";
 import ProfileScreen from "./profile/page";
 import BookingScreen from "./hall/booking";
+import HomeScreen from "./home/page";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -250,7 +251,7 @@ export default function App() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/FiraCode-Regular.ttf"),
   });
-
+  console.log(auth, "aaaa");
   useEffect(() => {
     const initializeApp = async () => {
       const authStatus = await fetchToken();
@@ -261,7 +262,6 @@ export default function App() {
         setIsFirstLaunch(false);
       }
 
-      // Request notification permissions
       const { status } = await Notifications.getPermissionsAsync();
       if (status !== "granted") {
         await Notifications.requestPermissionsAsync();
@@ -279,10 +279,10 @@ export default function App() {
   if (loading) {
     return <ActivityIndicator size="large" color="#4CAF50" />;
   }
-
   return (
     <AppContextProvider>
       <NavigationContainer independent={true}>
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
         {isFirstLaunch ? <OnboardingStack /> : <MainAppStack auth={auth} />}
       </NavigationContainer>
     </AppContextProvider>
@@ -295,15 +295,21 @@ const OnboardingStack = () => {
       <Stack.Screen name="Onboarding" component={OnboardScreen} />
       <Stack.Screen name="Signup" component={SignUpScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="HallPage" component={HallsScreen} />
       {/* <Stack.Screen name="HallPage" component={HallsScreen} /> */}
     </Stack.Navigator>
   );
 };
 
-const MainAppStack: React.FC<any> = (auth) => {
+const MainAppStack = ({ auth }: { auth?: IAuthProps }) => {
+  if (!auth) {
+    return null;
+  }
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       {auth.token ? (
         <>
           {auth.role === "admin" && (
@@ -338,19 +344,41 @@ const AdminTabs = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
+        name="HomePage"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: () => (
+            <Ionicons name="home" size={24} color={"#4CAF50"} />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="HallPage"
         component={HallsScreen}
-        options={{ tabBarIcon: () => <Ionicons name="home" size={24} /> }}
+        options={{
+          tabBarIcon: () => (
+            <Ionicons name="list" size={24} color={"#4CAF50"} />
+          ),
+        }}
       />
       <Tab.Screen
         name="CreateHall"
         component={CreateHallScreen}
-        options={{ tabBarIcon: () => <Ionicons name="add-circle" size={24} /> }}
+        options={{
+          tabBarIcon: () => (
+            <Ionicons name="add-circle" size={24} color={"#4CAF50"} />
+          ),
+        }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ tabBarIcon: () => <Ionicons name="person" size={24} /> }}
+        options={{
+          tabBarIcon: () => (
+            <Ionicons name="person" size={24} color={"#4CAF50"} />
+          ),
+        }}
       />
     </Tab.Navigator>
   );
@@ -362,17 +390,29 @@ const ClassRepTabs = () => {
       <Tab.Screen
         name="HallPage"
         component={HallsScreen}
-        options={{ tabBarIcon: () => <Ionicons name="home" size={24} /> }}
+        options={{
+          tabBarIcon: () => (
+            <Ionicons name="home" size={24} color={"#4CAF50"} />
+          ),
+        }}
       />
       <Tab.Screen
         name="BookHall"
         component={BookingScreen}
-        options={{ tabBarIcon: () => <Ionicons name="book" size={24} /> }}
+        options={{
+          tabBarIcon: () => (
+            <Ionicons name="book" size={24} color={"#4CAF50"} />
+          ),
+        }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ tabBarIcon: () => <Ionicons name="person" size={24} /> }}
+        options={{
+          tabBarIcon: () => (
+            <Ionicons name="person" size={24} color={"#4CAF50"} />
+          ),
+        }}
       />
     </Tab.Navigator>
   );

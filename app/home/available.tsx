@@ -8,7 +8,7 @@ interface IProps {
   halls: IHall[];
   loading: boolean;
 }
-export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
+const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
   const router = useRouter();
   const [role, setRole] = useState<string>("");
 
@@ -124,3 +124,5 @@ export const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
     </View>
   );
 };
+
+export default AvailableHalls;

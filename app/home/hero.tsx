@@ -14,7 +14,7 @@ const items = [
   },
 ];
 
-export const HeroCarousel = () => {
+const HeroCarousel = () => {
   const screenWidth = Dimensions.get("window").width;
 
   return (
@@ -40,3 +40,5 @@ export const HeroCarousel = () => {
     </View>
   );
 };
+
+export default HeroCarousel;

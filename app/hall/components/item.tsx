@@ -46,8 +46,8 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
         </View>
 
         <View className="p-3 flex-1">
-          <Text className="text-lg font-bold">{hall?.name}</Text>
-          <Text className="text-gray-500" numberOfLines={1}>
+          <Text className="text-lg text-dark font-bold">{hall?.name}</Text>
+          <Text className="text-dark" numberOfLines={1}>
             {hall?.location}
           </Text>
           <Text className="text-dark">{hall.capacity} students</Text>
