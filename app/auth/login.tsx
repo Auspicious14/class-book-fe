@@ -63,7 +63,7 @@ const LoginScreen = () => {
         );
         await AsyncStorage.setItem("tokenExpiry", expirationDate.toString());
 
-        navigation.navigate("hall/halls");
+        navigation.navigate("HallPage");
       }
     } catch (error: any) {
       setLoading(false);
@@ -96,20 +96,20 @@ const LoginScreen = () => {
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
             <View>
-              <Text className="my-2">Email</Text>
+              <Text className="my-2 text-dark">Email</Text>
               <TextInput
                 className={"border p-2 rounded-md border-gray-200"}
-                placeholder="Email"
+                placeholder="johndoe@hr.inc"
                 value={values.email}
                 onBlur={handleBlur("email")}
                 onChangeText={handleChange("email")}
               />
               <Text className="text-red-500">{errors.email}</Text>
               <View className="relative">
-                <Text className="my-2">Password</Text>
+                <Text className="my-2 text-dark">Password</Text>
                 <TextInput
                   className={"border p-2 rounded-md border-gray-200"}
-                  placeholder="Password"
+                  placeholder="***********"
                   value={values.password}
                   onBlur={handleBlur("password")}
                   onChangeText={handleChange("password")}
@@ -142,10 +142,12 @@ const LoginScreen = () => {
                 </Text>
               </TouchableOpacity>
               <View className="flex flex-row justify-center gap-2 items-center">
-                <Text>Already signed up?</Text>
-                <Link href={"auth/signup"} className="text-dark">
-                  <Text>Sign Up</Text>
-                </Link>
+                <Text className="text-dark">
+                  New to this? create an account here
+                </Text>
+                <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+                  <Text className="text-primary">Signup</Text>
+                </TouchableOpacity>
               </View>
             </View>
           )}

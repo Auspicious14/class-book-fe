@@ -6,7 +6,6 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
-  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router, useNavigation } from "expo-router";
@@ -28,64 +27,16 @@ const HomeScreen = () => {
     getHalls(filter);
   }, [filter]);
 
-  if (loading) {
-    return (
-      <ActivityIndicator
-        size="large"
-        color="#9C27B0"
-        style={{ flex: 1, justifyContent: "center" }}
-      />
-    );
-  }
-
   return (
     <SafeAreaView>
       <View className={"px-4 bg-secondary  h-full"}>
         <View className="">
           <Text
-            // style={{ fontFamily: "FiraCode-Regular", fontWeight: "bold" }}
             className={"text-xl mb-2 text-dark "}
           >{`Welcome Back, ${profile.firstName}!`}</Text>
         </View>
 
         <HeroCarousel />
-        {/* <View className="flex-row justify-between my-4">
-          <TouchableOpacity
-            className="bg-primary p-4 rounded-md items-center"
-            onPress={() => navigation.navigate("hall/booking")}
-          >
-            <Image
-              source={require("../assets/images/Hotel Booking-pana.png")}
-              style={{ width: 40, height: 40, marginBottom: 8 }}
-              resizeMode="cover"
-            />
-            <Text className="text-white">Book a Hall</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            className="bg-primary p-4 rounded-md items-center"
-            onPress={() => navigation.navigate("profile/page")}
-          >
-            <Image
-              source={require("../assets/images/Profile pic-cuate.png")}
-              style={{ width: 40, height: 40, marginBottom: 8 }}
-              resizeMode="cover"
-            />
-            <Text className="text-white">View Profile</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            className="bg-primary p-4 rounded-md items-center"
-            onPress={() => navigation.navigate("hall/page")}
-          >
-            <Image
-              source={require("../assets/images/Digital nomad-pana.png")}
-              style={{ width: 40, height: 40, marginBottom: 8 }}
-              resizeMode="cover"
-            />
-            <Text className="text-white">Explore Halls</Text>
-          </TouchableOpacity>
-        </View> */}
 
         <View className="flex-row justify-between my-4">
           {profile?.role === "admin" && (

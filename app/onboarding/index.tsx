@@ -44,7 +44,7 @@ const OnboardScreen = () => {
       {show.show && show.type === "final" && (
         <OnboardFinalScreen
           next={() => {
-            completeOnboarding(), router.navigate("auth/signup");
+            completeOnboarding(), router.navigate("Signup");
           }}
           color={show.type == "final"}
         />

@@ -19,6 +19,7 @@ import { Feather } from "@expo/vector-icons";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import Toast from "react-native-root-toast";
 import Dropdown from "react-native-input-select";
+import { useNavigation } from "@react-navigation/native";
 
 const FormSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name is required"),
@@ -32,6 +33,7 @@ const FormSchema = Yup.object().shape({
 
 const SignUpScreen = () => {
   const route = useLocalSearchParams();
+  const navigation: any = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const [role, setRole] = useState<string>("");
@@ -132,7 +134,7 @@ const SignUpScreen = () => {
                       selectedValue={role}
                       options={[
                         { label: "Admin", value: "admin" },
-                        { label: "Representative", value: "classRep" },
+                        { label: "Class Representative", value: "classRep" },
                         { label: "Student", value: "student" },
                       ]}
                       placeholder="Select a role"
@@ -147,7 +149,12 @@ const SignUpScreen = () => {
                         fontSize: 14,
                         fontWeight: "700",
                       }}
-                      placeholderStyle={{ padding: 0, margin: 0 }}
+                      placeholderStyle={{
+                        padding: 0,
+                        margin: 0,
+                        color: "#666666",
+                      }}
+                      primaryColor={"#666666"}
                       onValueChange={(value: string) => setRole(value)}
                     />
                     <View className="relative">
@@ -218,9 +225,11 @@ const SignUpScreen = () => {
 
                     <View className="flex flex-row justify-center gap-2 items-center">
                       <Text className="text-dark">Already signed up?</Text>
-                      <Link href={"auth/login"} className="text-primary">
-                        <Text>Login</Text>
-                      </Link>
+                      <TouchableOpacity
+                        onPress={() => navigation.navigate("Login")}
+                      >
+                        <Text className="text-primary">Login</Text>
+                      </TouchableOpacity>
                     </View>
                   </>
                 )}
