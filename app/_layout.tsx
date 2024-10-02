@@ -413,6 +413,16 @@ const ClassRepTabs = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: () => (
+            <Ionicons name="home" size={24} color={"#4CAF50"} />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="HallPage"
         component={HallsScreen}
         options={{
@@ -449,6 +459,17 @@ const ClassRepTabs = () => {
 const StudentTabs = () => {
   return (
     <Tab.Navigator>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: () => (
+            <Ionicons name="home" size={24} color={"#4CAF50"} />
+          ),
+        }}
+      />
+
       <Tab.Screen
         name="HallPage"
         component={HallsScreen}
