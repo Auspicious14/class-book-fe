@@ -18,6 +18,7 @@ export const HallDetailScreen = () => {
   const { hall, loading, getOneHall } = useHallState();
 
   const { _id = "" }: any = item;
+  console.log(item, "itemmm");
 
   useEffect(() => {
     getOneHall(_id);

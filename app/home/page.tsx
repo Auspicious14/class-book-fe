@@ -32,9 +32,9 @@ const HomeScreen = () => {
     <SafeAreaView>
       <View className={"px-4 bg-secondary  h-full"}>
         <View className="">
-          <Text
-            className={"text-xl my-2 text-dark "}
-          >{`Welcome Back, ${profile.firstName}!`}</Text>
+          <Text className={"text-xl my-2 text-dark "}>{`Welcome Back, ${
+            profile.firstName || "Admin"
+          }!`}</Text>
         </View>
 
         <HeroCarousel />

@@ -28,10 +28,8 @@ const FormSchema = Yup.object().shape({
 });
 
 const CreateHallScreen = () => {
-  // const hall: IHall = route?.params?.item || {};
   const route = useRoute();
-  const { item }: any = route.params; // Get the hall data passed in
-
+  const { item }: any = route.params;
   const {
     _id = "",
     images = [],
@@ -48,8 +46,9 @@ const CreateHallScreen = () => {
 
   useEffect(() => {
     fetchToken();
+    setImage(images[0]);
     StatusBar.setBarStyle("light-content");
-  }, [token, StatusBar]);
+  }, [token, StatusBar, images]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -88,11 +87,13 @@ const CreateHallScreen = () => {
   };
 
   const handleSubmit = async (val: any, actions: any) => {
-    saveHall({ _id, available, ...val }, image).then((res) => {
-      if (res) {
-        router.push("hall/halls");
+    saveHall({ _id, available, ...val }, _id ? images[0] : image).then(
+      (res) => {
+        if (res) {
+          router.push("hall/halls");
+        }
       }
-    });
+    );
   };
 
   return (
@@ -111,6 +112,7 @@ const CreateHallScreen = () => {
           }}
           validationSchema={FormSchema}
           onSubmit={handleSubmit}
+          enableReinitialize
         >
           {({ handleBlur, handleChange, values, handleSubmit, errors }) => (
             <View>
