@@ -10,14 +10,17 @@ import {
 } from "react-native";
 import { Formik } from "formik";
 import { useHallState } from "./context";
-import { router, useLocalSearchParams } from "expo-router";
+// import { router, useLocalSearchParams } from "expo-router";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { IHall } from "./model";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import Toast from "react-native-root-toast";
 
-const BookingScreen: React.FC = ({ route }: any) => {
-  const hall: IHall = route?.params?.item || {};
-
-  const { _id = "", name = "" }: any = hall;
+const BookingScreen: React.FC = () => {
+  const route = useRoute();
+  const navigation: any = useNavigation();
+  const { item }: any = route?.params;
+  const { _id = "", name = "" }: any = item;
   const { bookHall, loading } = useHallState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [pickerType, setPickerType] = useState<string | null>(null);
@@ -36,6 +39,10 @@ const BookingScreen: React.FC = ({ route }: any) => {
   };
 
   const handleConfirm = (selectedDate: Date, setFieldValue: Function) => {
+    console.log({
+      selectedDate: selectedDate.toLocaleTimeString(),
+      pickerType,
+    });
     if (pickerType === "bookedFromDate") {
       setFieldValue("bookedFromDate", selectedDate);
     } else if (pickerType === "bookedFromTime") {
@@ -57,21 +64,18 @@ const BookingScreen: React.FC = ({ route }: any) => {
       bookedToTime,
     } = values;
 
-    const bookedFrom = new Date(
-      bookedFromDate.getFullYear(),
-      bookedFromDate.getMonth(),
-      bookedFromDate.getDate(),
-      bookedFromTime.getHours(),
-      bookedFromTime.getMinutes()
-    );
+    const bookedFrom = new Date(bookedFromDate);
+    bookedFrom.setHours(bookedFromTime.getHours() + 1);
+    bookedFrom.setMinutes(bookedFromTime.getMinutes());
 
-    const bookedTo = new Date(
-      bookedToTime.getFullYear(),
-      bookedToDate.getMonth(),
-      bookedToDate.getDate(),
-      bookedToTime.getHours(),
-      bookedToTime.getMinutes()
-    );
+    const bookedTo = new Date(bookedToDate);
+    bookedTo.setHours(bookedToTime.getHours() + 1);
+    bookedTo.setMinutes(bookedToTime.getMinutes());
+
+    console.log({
+      bookedFrom: bookedFrom.toISOString(),
+      bookedTo: bookedTo.toISOString(),
+    });
 
     bookHall(_id, {
       bookedFrom: bookedFrom.toISOString(),
@@ -79,7 +83,7 @@ const BookingScreen: React.FC = ({ route }: any) => {
       duration,
     }).then((res) => {
       if (res) {
-        router.push("hall/page");
+        navigation.navigate("HallPage");
       }
     });
   };

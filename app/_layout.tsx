@@ -233,6 +233,8 @@ import ProfileScreen from "./profile/page";
 import BookingScreen from "./hall/booking";
 import HomeScreen from "./home/page";
 import { HallDetailScreen } from "./hall/detail";
+import Constants from "expo-constants";
+import { useHomeState } from "./home/context";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -245,9 +247,11 @@ interface IAuthProps {
 }
 
 export default function App() {
+  const { addPushTokenToUser } = useHomeState();
   const [auth, setAuth] = useState<IAuthProps>();
   const [isFirstLaunch, setIsFirstLaunch] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [pushToken, setPushToken] = useState<string>("");
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/FiraCode-Regular.ttf"),
@@ -264,9 +268,22 @@ export default function App() {
 
       const { status } = await Notifications.getPermissionsAsync();
       if (status !== "granted") {
-        await Notifications.requestPermissionsAsync();
+        const { status: newStatus } =
+          await Notifications.requestPermissionsAsync();
+        if (newStatus !== "granted") {
+          alert(
+            "Push notification permission is denied. Please enable notifications in your device settings."
+          );
+          return;
+        }
       }
-
+      const projectId =
+        Constants?.expoConfig?.extra?.eas?.projectId ??
+        Constants?.easConfig?.projectId;
+      const token = (await Notifications.getExpoPushTokenAsync({ projectId }))
+        .data;
+      setPushToken(token);
+      addPushTokenToUser(token);
       if (loaded) {
         SplashScreen.hideAsync();
       }

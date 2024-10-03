@@ -15,11 +15,13 @@ import { IHallQuery } from "../hall/model";
 import { useProfileState } from "../profile/context";
 import AvailableHalls from "./available";
 import HeroCarousel from "./hero";
+import { useHomeState } from "./context";
 
 const HomeScreen = () => {
   const navigation: any = useNavigation();
   const { getProfile, profile } = useProfileState();
   const { getHalls, halls, loading } = useHallState();
+  const { addPushTokenToUser } = useHomeState();
   const [filter, setFilter] = useState<IHallQuery>({ available: true });
 
   useEffect(() => {

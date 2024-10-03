@@ -142,7 +142,6 @@ export const HallConextProvider: React.FC<IProps> = ({ children }) => {
         backgroundColor: "green",
         textColor: "white",
       });
-
       return res?.data;
     } catch (error: any) {
       setLoading(false);

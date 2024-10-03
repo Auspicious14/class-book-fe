@@ -4,12 +4,12 @@ import Toast from "react-native-root-toast";
 
 interface HomeState {
   loading: boolean;
-  addPushTokenToUser: (userId: string, pushToken: string) => Promise<any>;
+  addPushTokenToUser: (pushToken: string) => Promise<any>;
 }
 
 const HomeContext = React.createContext<HomeState>({
   loading: false,
-  addPushTokenToUser(userId, pushToken) {
+  addPushTokenToUser(pushToken) {
     return null as never;
   },
 });
@@ -29,12 +29,11 @@ interface IProps {
 export const HomeContextProvider: React.FC<IProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const addPushTokenToUser = async (userId: string, pushToken: string) => {
+  const addPushTokenToUser = async (pushToken: string) => {
     setLoading(true);
     try {
       const { api } = await axiosApi();
       const res = await api.put(`/notification/save`, {
-        userId,
         pushToken,
       });
 

@@ -17,20 +17,7 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
   return (
     <View className="w-1/2 p-2">
       <TouchableOpacity
-        onPress={() =>
-          router.push({
-            pathname: "hall/create",
-            params: {
-              _id: hall._id,
-              name: hall.name,
-              location: hall.location,
-              capacity: hall.capacity,
-              images: JSON.stringify(hall.images),
-              description: hall.description,
-              available: hall.available.toString(),
-            },
-          })
-        }
+        onPress={() => navigation.navigate("CreateHall", { item: hall })}
         className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72"
       >
         <View className="relative w-full h-32">
@@ -66,8 +53,8 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
             <TouchableOpacity
               className="bg-primary py-2 rounded-md items-center"
               onPress={() =>
-                navigation.navigate("hall/booking", {
-                  hall,
+                navigation.navigate("BookHall", {
+                  item: hall,
                 })
               }
             >
