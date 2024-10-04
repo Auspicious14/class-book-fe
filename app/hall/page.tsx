@@ -14,10 +14,9 @@ import { IHall, IHallQuery } from "./model";
 import { SearchBar } from "@rneui/themed";
 import { useHallState } from "./context";
 import { HallListItem } from "./components/item";
+import { screenHeight } from "../../constants/utils";
 
 const numColumns = 2;
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const HallsScreen = () => {
   const { halls, getHalls, loading } = useHallState();

@@ -14,7 +14,9 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useAuthState } from "./context";
+import { axiosApi } from "../../components/api";
+import Toast from "react-native-root-toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FormSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email"),
@@ -24,12 +26,46 @@ const FormSchema = Yup.object().shape({
 const LoginScreen = () => {
   const windowHeight = Dimensions.get("window").height;
   const navigation: any = useNavigation();
-  const { Login, loading } = useAuthState();
   const [showPassword, setShowPassword] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (val: any) => {
     const { email, password } = val;
-    Login(email, password);
+    const expirationTime = 7 * 24 * 60 * 60 * 1000;
+    const expirationDate = new Date().getTime() + expirationTime;
+
+    setLoading(true);
+    try {
+      const { api } = await axiosApi();
+      const response = await api.post(`/auth/login`, { email, password });
+      const data = await response.data;
+
+      if (data.message && data.message === "Invalid email or password") {
+        Toast.show(data?.message, {
+          backgroundColor: "red",
+          textColor: "white",
+        });
+      }
+
+      if (data.token) {
+        await AsyncStorage.setItem(
+          "secret",
+          JSON.stringify({
+            token: data.token,
+            role: data?.data?.role,
+          })
+        );
+        await AsyncStorage.setItem("tokenExpiry", expirationDate.toString());
+        navigation.navigate("Home");
+      }
+    } catch (error: any) {
+      Toast.show(error, {
+        textColor: "white",
+        backgroundColor: "red",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

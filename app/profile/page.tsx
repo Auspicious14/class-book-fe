@@ -16,7 +16,7 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     getProfile();
-    StatusBar.setBarStyle("light-content");
+    // StatusBar.setBarStyle("light-content");
   }, []);
 
   if (loading) {

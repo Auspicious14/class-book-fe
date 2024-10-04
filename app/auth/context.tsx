@@ -78,6 +78,7 @@ export const AuthContextProvider: React.FC<IProps> = ({ children }) => {
 
   const Signup = async (query: IAuthQuery) => {
     setLoading(true);
+    console.log(query, "loadinnggg");
     try {
       const { api } = await axiosApi();
       const response = await api.post(`/auth/login`, query);

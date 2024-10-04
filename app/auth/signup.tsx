@@ -17,11 +17,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Feather } from "@expo/vector-icons";
-import { Link, router, useLocalSearchParams } from "expo-router";
 import Toast from "react-native-root-toast";
 import Dropdown from "react-native-input-select";
 import { useNavigation } from "@react-navigation/native";
-import { useAuthState } from "./context";
+import { axiosApi } from "../../components/api";
 
 const FormSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name is required"),
@@ -36,15 +35,51 @@ const FormSchema = Yup.object().shape({
 const SignUpScreen = () => {
   const windowHeight = Dimensions.get("window").height;
   const navigation: any = useNavigation();
-  const { Signup, loading } = useAuthState();
+  const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const [role, setRole] = useState<string>("");
 
   const handleSubmit = async (val: any) => {
     const { email, password, firstName, lastName } = val;
-    Signup({ email, password, firstName, lastName, role });
-  };
+    setLoading(true);
+    try {
+      const { api } = await axiosApi();
+      const response = await api.post(`/auth/signup`, {
+        email,
+        password,
+        firstName,
+        lastName,
+        role,
+      });
 
+      const data = response.data;
+      if (
+        data.message.includes("User validation failed") ||
+        data.message === "Invalid email or password"
+      ) {
+        Toast.show(data.message, {
+          backgroundColor: "red",
+          textColor: "white",
+        });
+      }
+      if (data.message.includes("successfully")) {
+        Toast.show(data.message, {
+          backgroundColor: "green",
+          textColor: "white",
+        });
+        navigation.navigate("Login");
+      }
+    } catch (error: any) {
+      setLoading(false);
+      Toast.show(error?.message, {
+        backgroundColor: "red",
+        textColor: "white",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  console.log({ role });
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}

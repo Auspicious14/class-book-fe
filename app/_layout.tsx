@@ -237,6 +237,7 @@ import Constants from "expo-constants";
 import { HomeContextProvider, useHomeState } from "./home/context";
 import Toast from "react-native-root-toast";
 import { axiosApi } from "../components/api";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -268,6 +269,7 @@ export default function App() {
       return res?.data;
     } catch (error: any) {
       setLoading(false);
+      console.log(error);
       Toast.show(error.response.data, {
         backgroundColor: "red",
         textColor: "white",
@@ -306,7 +308,7 @@ export default function App() {
       const token = (await Notifications.getExpoPushTokenAsync({ projectId }))
         .data;
 
-      if (token) {
+      if (token && auth) {
         await addPushTokenToUser(token);
       }
 
@@ -329,14 +331,14 @@ export default function App() {
     );
   }
   return (
-    <>
+    <RootSiblingParent>
       <AppContextProvider>
         <NavigationContainer independent={true}>
-          <StatusBar backgroundColor="white" barStyle="dark-content" />
+          {/* <StatusBar backgroundColor="#4CAF50" barStyle="dark-content" /> */}
           {isFirstLaunch ? <OnboardingStack /> : <MainAppStack auth={auth} />}
         </NavigationContainer>
       </AppContextProvider>
-    </>
+    </RootSiblingParent>
   );
 }
 
@@ -377,7 +379,15 @@ const MainAppStack = ({ auth }: { auth?: IAuthProps }) => {
             {auth.role === "student" && (
               <>
                 <Stack.Screen name="StudentTabs" component={StudentTabs} />
-                <Stack.Screen name="HallDetail" component={HallDetailScreen} />
+                <Stack.Screen
+                  name="HallDetail"
+                  component={HallDetailScreen}
+                  options={{
+                    headerShown: true,
+                    headerTitle: "",
+                    // headerTransparent: true,
+                  }}
+                />
               </>
             )}
           </>
@@ -403,7 +413,7 @@ const MainAppStack = ({ auth }: { auth?: IAuthProps }) => {
 const AdminTabs = () => {
   return (
     <>
-      <StatusBar backgroundColor="white" barStyle="dark-content" />
+      {/* <StatusBar backgroundColor="white" barStyle="dark-content" /> */}
       <Tab.Navigator>
         <Tab.Screen
           name="Home"
@@ -419,7 +429,8 @@ const AdminTabs = () => {
           name="HallPage"
           component={HallsScreen}
           options={{
-            headerShown: false,
+            headerShown: true,
+            headerTitle: "",
             tabBarIcon: () => (
               <Ionicons name="list" size={24} color={"#4CAF50"} />
             ),
@@ -429,7 +440,8 @@ const AdminTabs = () => {
           name="CreateHall"
           component={CreateHallScreen}
           options={{
-            headerShown: false,
+            headerShown: true,
+            headerTitle: "",
             tabBarIcon: () => (
               <Ionicons name="add-circle" size={24} color={"#4CAF50"} />
             ),
@@ -449,7 +461,8 @@ const AdminTabs = () => {
           name="Profile"
           component={ProfileScreen}
           options={{
-            headerShown: false,
+            headerShown: true,
+            headerTitle: "",
             tabBarIcon: () => (
               <Ionicons name="person" size={24} color={"#4CAF50"} />
             ),
@@ -477,7 +490,8 @@ const ClassRepTabs = () => {
         name="HallPage"
         component={HallsScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "",
           tabBarIcon: () => (
             <Ionicons name="home" size={24} color={"#4CAF50"} />
           ),
@@ -487,7 +501,8 @@ const ClassRepTabs = () => {
         name="BookHall"
         component={BookingScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "",
           tabBarIcon: () => (
             <Ionicons name="book" size={24} color={"#4CAF50"} />
           ),
@@ -497,7 +512,8 @@ const ClassRepTabs = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "",
           tabBarIcon: () => (
             <Ionicons name="person" size={24} color={"#4CAF50"} />
           ),
@@ -514,27 +530,33 @@ const StudentTabs = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "",
           tabBarIcon: () => (
             <Ionicons name="home" size={24} color={"#4CAF50"} />
           ),
         }}
       />
-
       <Tab.Screen
         name="HallPage"
         component={HallsScreen}
         options={{
-          headerShown: false,
-          tabBarIcon: () => <Ionicons name="home" size={24} />,
+          headerShown: true,
+          headerTitle: "",
+          tabBarIcon: () => (
+            <Ionicons name="home" size={24} color={"#4CAF50"} />
+          ),
         }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
-          headerShown: false,
-          tabBarIcon: () => <Ionicons name="person" size={24} />,
+          headerShown: true,
+          headerTitle: "",
+          tabBarIcon: () => (
+            <Ionicons name="person" size={24} color={"#4CAF50"} />
+          ),
         }}
       />
     </Tab.Navigator>
