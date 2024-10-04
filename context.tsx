@@ -29,9 +29,5 @@ export const combineContext = (...components: FC[]): FC<any> => {
   return CombinedComponent;
 };
 
-const providers = [
-  HallConextProvider,
-  ProfileContextProvider,
-  HomeContextProvider,
-] as any;
+const providers = [HallConextProvider, ProfileContextProvider] as any;
 export const AppContextProvider = combineContext(...providers);

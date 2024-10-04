@@ -234,7 +234,9 @@ import BookingScreen from "./hall/booking";
 import HomeScreen from "./home/page";
 import { HallDetailScreen } from "./hall/detail";
 import Constants from "expo-constants";
-import { useHomeState } from "./home/context";
+import { HomeContextProvider, useHomeState } from "./home/context";
+import Toast from "react-native-root-toast";
+import { axiosApi } from "../components/api";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -247,7 +249,7 @@ interface IAuthProps {
 }
 
 export default function App() {
-  const { addPushTokenToUser } = useHomeState();
+  // const { addPushTokenToUser } = useHomeState();
   const [auth, setAuth] = useState<IAuthProps>();
   const [isFirstLaunch, setIsFirstLaunch] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -256,6 +258,33 @@ export default function App() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/FiraCode-Regular.ttf"),
   });
+
+  const addPushTokenToUser = async (pushToken: string) => {
+    setLoading(true);
+    console.log("Adding from context...");
+    try {
+      const { api } = await axiosApi();
+      const res = await api.put(`/notification/save-token`, {
+        pushToken,
+      });
+
+      // Toast.show(res?.data.message, {
+      //   backgroundColor: "green",
+      //   textColor: "white",
+      // });
+
+      return res?.data;
+    } catch (error: any) {
+      setLoading(false);
+      Toast.show(error.response.data, {
+        backgroundColor: "red",
+        textColor: "white",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const initializeApp = async () => {
       const authStatus = await fetchToken();
@@ -277,13 +306,18 @@ export default function App() {
           return;
         }
       }
+
       const projectId =
         Constants?.expoConfig?.extra?.eas?.projectId ??
         Constants?.easConfig?.projectId;
       const token = (await Notifications.getExpoPushTokenAsync({ projectId }))
         .data;
       setPushToken(token);
-      addPushTokenToUser(token);
+
+      if (token) {
+        await addPushTokenToUser(token);
+      }
+
       if (loaded) {
         SplashScreen.hideAsync();
       }
@@ -297,12 +331,14 @@ export default function App() {
     return <ActivityIndicator size="large" color="#4CAF50" />;
   }
   return (
-    <AppContextProvider>
-      <NavigationContainer independent={true}>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
-        {isFirstLaunch ? <OnboardingStack /> : <MainAppStack auth={auth} />}
-      </NavigationContainer>
-    </AppContextProvider>
+    <>
+      <AppContextProvider>
+        <NavigationContainer independent={true}>
+          <StatusBar backgroundColor="white" barStyle="dark-content" />
+          {isFirstLaunch ? <OnboardingStack /> : <MainAppStack auth={auth} />}
+        </NavigationContainer>
+      </AppContextProvider>
+    </>
   );
 }
 
@@ -312,7 +348,7 @@ const OnboardingStack = () => {
       <Stack.Screen name="Onboarding" component={OnboardScreen} />
       <Stack.Screen name="Signup" component={SignUpScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
-      {/* <Stack.Screen name="HallPage" component={HallsScreen} /> */}
+      <Stack.Screen name="HallPage" component={HallsScreen} />
     </Stack.Navigator>
   );
 };

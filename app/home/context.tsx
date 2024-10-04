@@ -31,9 +31,10 @@ export const HomeContextProvider: React.FC<IProps> = ({ children }) => {
 
   const addPushTokenToUser = async (pushToken: string) => {
     setLoading(true);
+    console.log("Adding from context...");
     try {
       const { api } = await axiosApi();
-      const res = await api.put(`/notification/save`, {
+      const res = await api.put(`/notification/save-token`, {
         pushToken,
       });
 
@@ -42,6 +43,7 @@ export const HomeContextProvider: React.FC<IProps> = ({ children }) => {
         textColor: "white",
       });
 
+      console.log(res.data, "home daaa");
       return res?.data;
     } catch (error: any) {
       setLoading(false);
