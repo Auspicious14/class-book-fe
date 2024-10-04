@@ -1,27 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  TouchableOpacity,
-  Dimensions,
-  StatusBar,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, router, useNavigation } from "expo-router";
+import { useNavigation } from "expo-router";
 import { useHallState } from "../hall/context";
 import { IHallQuery } from "../hall/model";
 import { useProfileState } from "../profile/context";
 import AvailableHalls from "./available";
 import HeroCarousel from "./hero";
-import { useHomeState } from "./context";
 
 const HomeScreen = () => {
   const navigation: any = useNavigation();
   const { getProfile, profile } = useProfileState();
   const { getHalls, halls, loading } = useHallState();
-  const { addPushTokenToUser } = useHomeState();
   const [filter, setFilter] = useState<IHallQuery>({ available: true });
 
   useEffect(() => {

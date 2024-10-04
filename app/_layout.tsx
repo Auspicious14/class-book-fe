@@ -249,11 +249,9 @@ interface IAuthProps {
 }
 
 export default function App() {
-  // const { addPushTokenToUser } = useHomeState();
   const [auth, setAuth] = useState<IAuthProps>();
   const [isFirstLaunch, setIsFirstLaunch] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [pushToken, setPushToken] = useState<string>("");
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/FiraCode-Regular.ttf"),
@@ -261,17 +259,11 @@ export default function App() {
 
   const addPushTokenToUser = async (pushToken: string) => {
     setLoading(true);
-    console.log("Adding from context...");
     try {
       const { api } = await axiosApi();
       const res = await api.put(`/notification/save-token`, {
         pushToken,
       });
-
-      // Toast.show(res?.data.message, {
-      //   backgroundColor: "green",
-      //   textColor: "white",
-      // });
 
       return res?.data;
     } catch (error: any) {
@@ -310,9 +302,9 @@ export default function App() {
       const projectId =
         Constants?.expoConfig?.extra?.eas?.projectId ??
         Constants?.easConfig?.projectId;
+
       const token = (await Notifications.getExpoPushTokenAsync({ projectId }))
         .data;
-      setPushToken(token);
 
       if (token) {
         await addPushTokenToUser(token);
@@ -328,7 +320,13 @@ export default function App() {
   }, [loaded]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#4CAF50" />;
+    return (
+      <ActivityIndicator
+        size="large"
+        color="#9C27B0"
+        style={{ flex: 1, justifyContent: "center" }}
+      />
+    );
   }
   return (
     <>

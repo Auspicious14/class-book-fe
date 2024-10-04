@@ -10,6 +10,7 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,6 +21,7 @@ import { Link, router, useLocalSearchParams } from "expo-router";
 import Toast from "react-native-root-toast";
 import Dropdown from "react-native-input-select";
 import { useNavigation } from "@react-navigation/native";
+import { useAuthState } from "./context";
 
 const FormSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name is required"),
@@ -32,45 +34,26 @@ const FormSchema = Yup.object().shape({
 });
 
 const SignUpScreen = () => {
-  const route = useLocalSearchParams();
+  const windowHeight = Dimensions.get("window").height;
   const navigation: any = useNavigation();
-  const [loading, setLoading] = useState<boolean>(false);
+  const { Signup, loading } = useAuthState();
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const [role, setRole] = useState<string>("");
 
   const handleSubmit = async (val: any) => {
     const { email, password, firstName, lastName } = val;
-
-    setLoading(true);
-    try {
-      const response = await axios({
-        url: "https://class-book-be.onrender.com/auth/signup",
-        method: "POST",
-        data: { firstName, lastName, email, password, role },
-      });
-
-      setLoading(false);
-      const data = response.data;
-      if (data) {
-        Toast.show(data.message, {
-          backgroundColor: "green",
-          textColor: "white",
-        });
-        router.push("auth/login");
-      }
-    } catch (error: any) {
-      setLoading(false);
-      Toast.show(error?.message, {
-        backgroundColor: "red",
-        textColor: "white",
-      });
-    }
+    Signup({ email, password, firstName, lastName, role });
   };
-  const windowHeight = Dimensions.get("window").height;
 
   return (
-    <KeyboardAvoidingView>
-      <SafeAreaView style={{ maxHeight: windowHeight }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
+    >
+      <SafeAreaView
+        style={{ flexGrow: 1, justifyContent: "center", padding: 20 }}
+      >
         <View className={"bg-secondary p-8"}>
           <View className={"flex justify-center items-center "}>
             <Image
