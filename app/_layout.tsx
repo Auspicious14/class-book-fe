@@ -437,7 +437,7 @@ const AdminTabs = () => {
           name="HallPage"
           component={HallsScreen}
           options={{
-            headerShown: true,
+            headerShown: false,
             headerTitle: "",
             tabBarIcon: () => (
               <Ionicons name="list" size={24} color={"#4CAF50"} />
@@ -448,7 +448,7 @@ const AdminTabs = () => {
           name="CreateHall"
           component={CreateHallScreen}
           options={{
-            headerShown: true,
+            headerShown: false,
             headerTitle: "",
             tabBarIcon: () => (
               <Ionicons name="add-circle" size={24} color={"#4CAF50"} />
@@ -469,7 +469,7 @@ const AdminTabs = () => {
           name="Profile"
           component={ProfileScreen}
           options={{
-            headerShown: true,
+            headerShown: false,
             headerTitle: "",
             tabBarIcon: () => (
               <Ionicons name="person" size={24} color={"#4CAF50"} />
@@ -498,7 +498,7 @@ const ClassRepTabs = () => {
         name="HallPage"
         component={HallsScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitle: "",
           tabBarIcon: () => (
             <Ionicons name="home" size={24} color={"#4CAF50"} />
@@ -509,7 +509,7 @@ const ClassRepTabs = () => {
         name="BookHall"
         component={BookingScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitle: "",
           tabBarIcon: () => (
             <Ionicons name="book" size={24} color={"#4CAF50"} />
@@ -520,7 +520,7 @@ const ClassRepTabs = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitle: "",
           tabBarIcon: () => (
             <Ionicons name="person" size={24} color={"#4CAF50"} />
@@ -549,7 +549,7 @@ const StudentTabs = () => {
         name="HallPage"
         component={HallsScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitle: "",
           tabBarIcon: () => (
             <Ionicons name="list" size={24} color={"#4CAF50"} />
@@ -560,7 +560,7 @@ const StudentTabs = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitle: "",
           tabBarIcon: () => (
             <Ionicons name="person" size={24} color={"#4CAF50"} />
