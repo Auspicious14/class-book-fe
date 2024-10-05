@@ -289,6 +289,17 @@ export default function App() {
         setIsFirstLaunch(false);
       }
 
+      if (loaded) {
+        SplashScreen.hideAsync();
+      }
+      setLoading(false);
+    };
+
+    initializeApp();
+  }, [loaded]);
+
+  useEffect(() => {
+    const handlePushNotifications = async () => {
       const { status } = await Notifications.getPermissionsAsync();
       if (status !== "granted") {
         const { status: newStatus } =
@@ -304,22 +315,18 @@ export default function App() {
       const projectId =
         Constants?.expoConfig?.extra?.eas?.projectId ??
         Constants?.easConfig?.projectId;
-
       const token = (await Notifications.getExpoPushTokenAsync({ projectId }))
         .data;
 
       if (token && auth) {
         await addPushTokenToUser(token);
       }
-
-      if (loaded) {
-        SplashScreen.hideAsync();
-      }
-      setLoading(false);
     };
 
-    initializeApp();
-  }, [loaded]);
+    if (!isFirstLaunch && auth?.token) {
+      handlePushNotifications();
+    }
+  }, [auth, isFirstLaunch]);
 
   if (loading) {
     return (
@@ -330,6 +337,7 @@ export default function App() {
       />
     );
   }
+
   return (
     <RootSiblingParent>
       <AppContextProvider>
@@ -530,7 +538,7 @@ const StudentTabs = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitle: "",
           tabBarIcon: () => (
             <Ionicons name="home" size={24} color={"#4CAF50"} />
@@ -544,7 +552,7 @@ const StudentTabs = () => {
           headerShown: true,
           headerTitle: "",
           tabBarIcon: () => (
-            <Ionicons name="home" size={24} color={"#4CAF50"} />
+            <Ionicons name="list" size={24} color={"#4CAF50"} />
           ),
         }}
       />
