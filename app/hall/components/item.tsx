@@ -83,9 +83,9 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
               <Text className="text-white font-bold">Book Now</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity className="bg-accent py-2 rounded-md items-center">
+            <TouchableOpacity className="bg-accent opacity-70 py-2 rounded-md items-center">
               <Text className="text-white font-bold">
-                {hall.available && role === "admin"
+                {!hall.available && role === "admin"
                   ? "Already Booked"
                   : "Detail"}
               </Text>
