@@ -10,6 +10,9 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://class-book-be.onrender.com"
+      },
       "android": {
         "buildType": "apk"
       }

@@ -43,63 +43,63 @@ export const AuthContextProvider: React.FC<IProps> = ({ children }) => {
     const expirationDate = new Date().getTime() + expirationTime;
 
     setLoading(true);
-    try {
-      const { api } = await axiosApi();
-      const response = await api.post(`/auth/signup`, { email, password });
-      const data = await response.data;
+    // try {
+    //   const { api } = await axiosApi();
+    //   const response = await api.post(`/auth/signup`, { email, password });
+    //   const data = await response.data;
 
-      if (data.message) {
-        Toast.show(data?.message, {
-          backgroundColor: "green",
-          textColor: "white",
-        });
-      }
+    //   if (data.message) {
+    //     Toast.show(data?.message, {
+    //       backgroundColor: "green",
+    //       textColor: "white",
+    //     });
+    //   }
 
-      if (data.token) {
-        await AsyncStorage.setItem(
-          "secret",
-          JSON.stringify({
-            token: data.token,
-            role: data?.data?.role,
-          })
-        );
-        await AsyncStorage.setItem("tokenExpiry", expirationDate.toString());
-        navigation.navigate("HallPage");
-      }
-    } catch (error: any) {
-      Toast.show(error, {
-        textColor: "white",
-        backgroundColor: "red",
-      });
-    } finally {
-      setLoading(false);
-    }
+    //   if (data.token) {
+    //     await AsyncStorage.setItem(
+    //       "secret",
+    //       JSON.stringify({
+    //         token: data.token,
+    //         role: data?.data?.role,
+    //       })
+    //     );
+    //     await AsyncStorage.setItem("tokenExpiry", expirationDate.toString());
+    //     navigation.navigate("HallPage");
+    //   }
+    // } catch (error: any) {
+    //   Toast.show(error, {
+    //     textColor: "white",
+    //     backgroundColor: "red",
+    //   });
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const Signup = async (query: IAuthQuery) => {
     setLoading(true);
     console.log(query, "loadinnggg");
-    try {
-      const { api } = await axiosApi();
-      const response = await api.post(`/auth/login`, query);
+    // try {
+    //   const { api } = await axiosApi();
+    //   const response = await api.post(`/auth/login`, query);
 
-      const data = response.data;
-      if (data) {
-        Toast.show(data.message, {
-          backgroundColor: "green",
-          textColor: "white",
-        });
-        navigation.navigate("Login");
-      }
-    } catch (error: any) {
-      setLoading(false);
-      Toast.show(error?.message, {
-        backgroundColor: "red",
-        textColor: "white",
-      });
-    } finally {
-      setLoading(false);
-    }
+    //   const data = response.data;
+    //   if (data) {
+    //     Toast.show(data.message, {
+    //       backgroundColor: "green",
+    //       textColor: "white",
+    //     });
+    //     navigation.navigate("Login");
+    //   }
+    // } catch (error: any) {
+    //   setLoading(false);
+    //   Toast.show(error?.message, {
+    //     backgroundColor: "red",
+    //     textColor: "white",
+    //   });
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (

@@ -39,12 +39,14 @@ const LoginScreen = () => {
       const { api } = await axiosApi();
       const response = await api.post(`/auth/login`, { email, password });
       const data = await response.data;
+      const role = data.data.role;
 
-      if (data.message && data.message === "Invalid email or password") {
-        Toast.show(data?.message, {
+      if (response.status === 401) {
+        Toast.show(data.message, {
           backgroundColor: "red",
           textColor: "white",
         });
+        return;
       }
 
       if (data.token) {
@@ -56,10 +58,20 @@ const LoginScreen = () => {
           })
         );
         await AsyncStorage.setItem("tokenExpiry", expirationDate.toString());
-        navigation.navigate("Home");
+
+        if (role === "admin") {
+          navigation.navigate("AdminTabs");
+        } else if (role === "classRep") {
+          navigation.navigate("ClassRepTabs");
+        } else if (role === "student") {
+          navigation.navigate("StudentTabs");
+        }
       }
     } catch (error: any) {
-      Toast.show(error, {
+      const errorMessage =
+        error?.response?.data?.message || "An error occurred";
+      console.log(error, "error");
+      Toast.show(errorMessage, {
         textColor: "white",
         backgroundColor: "red",
       });

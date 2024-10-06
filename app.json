@@ -4,26 +4,26 @@
     "slug": "class-book-fe",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/write.png",
+    "icon": "./assets/images/app-icon1.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/hall-mate-splash-design.webp",
+      "resizeMode": "cover",
+      "height": "100%",
+      "width": "100%"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hallmate"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/write.png",
+        "foregroundImage": "./assets/images/app-icon1.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.classbook",
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "package": "com.hallmate",
+      "permissions": ["android.permission.RECORD_AUDIO", "INTERNET"]
     },
     "web": {
       "bundler": "metro",

@@ -5,12 +5,16 @@ import {
   SafeAreaView,
   StatusBar,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useProfileState } from "./context";
 import { Divider } from "@rneui/base";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = () => {
+  const navigation: any = useNavigation();
   const { profile, getProfile, loading } = useProfileState();
   const screenHeight = Dimensions.get("window").height;
 
@@ -28,6 +32,13 @@ const ProfileScreen = () => {
       />
     );
   }
+
+  const logout = async () => {
+    const expiredSecret = await AsyncStorage.removeItem("secret");
+    const tokenExpiry = await AsyncStorage.removeItem("tokenExpiry");
+
+    navigation.navigate("Login");
+  };
 
   return (
     <SafeAreaView className="bg-secondary px-4">
@@ -55,6 +66,11 @@ const ProfileScreen = () => {
           {profile.role}
         </Text>
         <Divider />
+        <TouchableOpacity onPress={logout}>
+          <Text className="my-2 font-bold text-lg text-red-500 capitalize">
+            Sign out
+          </Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

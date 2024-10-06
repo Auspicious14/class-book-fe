@@ -246,7 +246,7 @@ SplashScreen.preventAutoHideAsync();
 
 interface IAuthProps {
   token: string;
-  role: "admin" | "student" | "classRep";
+  role: "admin" | "student" | "classRep" | "";
 }
 
 export default function App() {
@@ -282,11 +282,14 @@ export default function App() {
   useEffect(() => {
     const initializeApp = async () => {
       const authStatus = await fetchToken();
-      if (!authStatus || !authStatus.token) {
+      if (authStatus?.onboardingIncomplete) {
         setIsFirstLaunch(true);
-      } else {
-        setAuth({ token: authStatus.token, role: authStatus.role });
+      } else if (authStatus?.loggedOut) {
         setIsFirstLaunch(false);
+        setAuth({ role: "", token: "" });
+      } else if (authStatus?.token) {
+        setIsFirstLaunch(false);
+        setAuth({ token: authStatus.token, role: authStatus.role });
       }
 
       if (loaded) {
@@ -337,7 +340,7 @@ export default function App() {
       />
     );
   }
-
+  console.log({ isFirstLaunch });
   return (
     <RootSiblingParent>
       <AppContextProvider>
@@ -356,15 +359,12 @@ const OnboardingStack = () => {
       <Stack.Screen name="Onboarding" component={OnboardScreen} />
       <Stack.Screen name="Signup" component={SignUpScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="HallPage" component={HallsScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
     </Stack.Navigator>
   );
 };
 
 const MainAppStack = ({ auth }: { auth?: IAuthProps }) => {
-  if (!auth) {
-    return null;
-  }
   return (
     <>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
@@ -373,18 +373,24 @@ const MainAppStack = ({ auth }: { auth?: IAuthProps }) => {
           headerShown: false,
         }}
       >
-        {auth.token ? (
+        {auth!.token ? (
           <>
-            {auth.role === "admin" && (
+            {auth!.role === "admin" && (
               <>
                 <Stack.Screen name="AdminTabs" component={AdminTabs} />
                 <Stack.Screen name="BookHall" component={BookingScreen} />
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="Signup" component={SignUpScreen} />
               </>
             )}
-            {auth.role === "classRep" && (
-              <Stack.Screen name="ClassRepTabs" component={ClassRepTabs} />
+            {auth!.role === "classRep" && (
+              <>
+                <Stack.Screen name="ClassRepTabs" component={ClassRepTabs} />
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="Signup" component={SignUpScreen} />
+              </>
             )}
-            {auth.role === "student" && (
+            {auth!.role === "student" && (
               <>
                 <Stack.Screen name="StudentTabs" component={StudentTabs} />
                 <Stack.Screen
@@ -396,6 +402,8 @@ const MainAppStack = ({ auth }: { auth?: IAuthProps }) => {
                     // headerTransparent: true,
                   }}
                 />
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="Signup" component={SignUpScreen} />
               </>
             )}
           </>
@@ -421,7 +429,6 @@ const MainAppStack = ({ auth }: { auth?: IAuthProps }) => {
 const AdminTabs = () => {
   return (
     <>
-      {/* <StatusBar backgroundColor="white" barStyle="dark-content" /> */}
       <Tab.Navigator>
         <Tab.Screen
           name="Home"
@@ -456,15 +463,15 @@ const AdminTabs = () => {
           }}
         />
         {/* <Tab.Screen
-          name="BookHall"
-          component={BookingScreen}
-          options={{
-            headerShown: false,
-            tabBarIcon: () => (
-              <Ionicons name="book" size={24} color={"#4CAF50"} />
-            ),
-          }}
-        /> */}
+            name="BookHall"
+            component={BookingScreen}
+            options={{
+              headerShown: false,
+              tabBarIcon: () => (
+                <Ionicons name="book" size={24} color={"#4CAF50"} />
+              ),
+            }}
+          /> */}
         <Tab.Screen
           name="Profile"
           component={ProfileScreen}
