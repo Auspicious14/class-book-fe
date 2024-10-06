@@ -9,16 +9,13 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
-import { fetchToken } from "../../helper";
-import { IHall } from "./model";
 import { useHallState } from "./context";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required("Hall Name is required"),
@@ -29,7 +26,9 @@ const FormSchema = Yup.object().shape({
 
 const CreateHallScreen = () => {
   const route = useRoute();
+  const navigation: any = useNavigation();
   const { item }: any = route.params;
+
   const {
     _id = "",
     images = [],
@@ -41,14 +40,12 @@ const CreateHallScreen = () => {
   } = item;
 
   const { saveHall, loading } = useHallState();
-  const [token, setToken] = useState<string>("");
   const [image, setImage] = useState<any>(images[0] || null);
 
   useEffect(() => {
-    fetchToken();
     setImage(images[0]);
     StatusBar.setBarStyle("light-content");
-  }, [token, StatusBar, images]);
+  }, [StatusBar, images]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -90,7 +87,7 @@ const CreateHallScreen = () => {
     saveHall({ _id, available, ...val }, _id ? images[0] : image).then(
       (res) => {
         if (res) {
-          router.push("hall/halls");
+          navigation.nvigate("HallPage");
         }
       }
     );

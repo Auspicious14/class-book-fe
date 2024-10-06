@@ -454,6 +454,7 @@ const AdminTabs = () => {
         <Tab.Screen
           name="CreateHall"
           component={CreateHallScreen}
+          initialParams={{ item: {} }}
           options={{
             headerShown: false,
             headerTitle: "",
@@ -512,9 +513,10 @@ const ClassRepTabs = () => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="BookHall"
         component={BookingScreen}
+        initialParams={{ item: {} }}
         options={{
           headerShown: false,
           headerTitle: "",
@@ -522,7 +524,7 @@ const ClassRepTabs = () => {
             <Ionicons name="book" size={24} color={"#4CAF50"} />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}

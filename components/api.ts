@@ -9,8 +9,8 @@ export const axiosApi = async () => {
     token = extractToken.token;
   }
   const api = axios.create({
-    // baseURL: process.env.EXPO_PUBLIC_API_URL,
-    baseURL: "http://192.168.42.5:10000",
+    baseURL: process.env.EXPO_PUBLIC_API_URL,
+    // baseURL: "http://192.168.42.5:10000",
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${token}`,

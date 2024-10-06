@@ -8,10 +8,8 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/hall-mate-splash-design.webp",
-      "resizeMode": "cover",
-      "height": "100%",
-      "width": "100%"
+      "image": "./assets/images/app-icon1.png",
+      "resizeMode": "contain"
     },
     "ios": {
       "supportsTablet": true,
