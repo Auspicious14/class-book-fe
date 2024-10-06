@@ -4,11 +4,11 @@
     "slug": "class-book-fe",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/app-icon1.png",
+    "icon": "./assets/images/app-icon2.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/app-icon1.png",
+      "image": "./assets/images/app-icon2.png",
       "resizeMode": "contain"
     },
     "ios": {
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/app-icon1.png",
+        "foregroundImage": "./assets/images/app-icon2.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.hallmate",
