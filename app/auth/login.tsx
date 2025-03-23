@@ -13,70 +13,45 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Feather } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { axiosApi } from "../../components/api";
 import Toast from "react-native-root-toast";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuthState } from "./context";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+
+type RootStackParamList = {
+  AdminTabs: undefined;
+  ClassRepTabs: undefined;
+  StudentTabs: undefined;
+  Login: undefined;
+  Signup: undefined;
+};
 
 const FormSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email"),
-  password: Yup.string().required().min(6),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().required("Password is required").min(6),
 });
 
 const LoginScreen = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const windowHeight = Dimensions.get("window").height;
-  const navigation: any = useNavigation();
   const [showPassword, setShowPassword] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { login, loading } = useAuthState();
 
   const handleSubmit = async (val: any) => {
     const { email, password } = val;
-    const expirationTime = 7 * 24 * 60 * 60 * 1000;
-    const expirationDate = new Date().getTime() + expirationTime;
-
-    setLoading(true);
     try {
-      const { api } = await axiosApi();
-      const response = await api.post(`/auth/login`, { email, password });
-      const data = await response.data;
-      const role = data.data.role;
-
-      if (response.status === 401) {
-        Toast.show(data.message, {
-          backgroundColor: "red",
-          textColor: "white",
-        });
-        return;
-      }
-
-      if (data.token) {
-        await AsyncStorage.setItem(
-          "secret",
-          JSON.stringify({
-            token: data.token,
-            role: data?.data?.role,
-          })
-        );
-        await AsyncStorage.setItem("tokenExpiry", expirationDate.toString());
-
-        if (role === "admin") {
-          navigation.navigate("AdminTabs");
-        } else if (role === "classRep") {
-          navigation.navigate("ClassRepTabs");
-        } else if (role === "student") {
-          navigation.navigate("StudentTabs");
-        }
+      const role = await login(email, password);
+      if (role === "admin") {
+        navigation.navigate("AdminTabs");
+      } else if (role === "classRep") {
+        navigation.navigate("ClassRepTabs");
+      } else if (role === "student") {
+        navigation.navigate("StudentTabs");
       }
     } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message || "An error occurred";
-      console.log(error, "error");
-      Toast.show(errorMessage, {
-        textColor: "white",
+      Toast.show(error.message || "An error occurred", {
         backgroundColor: "red",
+        textColor: "white",
       });
-    } finally {
-      setLoading(false);
     }
   };
 

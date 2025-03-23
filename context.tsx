@@ -31,7 +31,7 @@ export const combineContext = (...components: FC[]): FC<any> => {
 };
 
 const providers = [
-  // AuthContextProvider,
+  AuthContextProvider,
   HallConextProvider,
   ProfileContextProvider,
 ] as any;
