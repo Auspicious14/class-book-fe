@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, TouchableOpacity, View, Text, Image } from "react-native";
+import { FlatList, TouchableOpacity, View, Image } from "react-native";
 import { IHall } from "../hall/model";
 import { Link, useRouter } from "expo-router";
 import { fetchToken } from "../../helper";
 import { useNavigation } from "@react-navigation/native";
+import { CustomText } from "../../components";
 
 interface IProps {
   halls: IHall[];
@@ -23,9 +24,9 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
 
   return (
     <View>
-      <Text className="font-bold text-dark text-lg">
+      <CustomText className="font-bold text-dark text-lg">
         Available Halls for you
-      </Text>
+      </CustomText>
       {!loading && halls?.length > 0 && (
         <View className="py-4">
           <FlatList
@@ -37,7 +38,7 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
             renderItem={({ item }) => (
               <View className="mr-4 w-64">
                 {/* Card Container */}
-                <View className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72">
+                <View className="bg-white flex flex-col justify-between rounded-xl shadow-sm border border-gray-200 h-72 p-3">
                   {/* Image Section */}
                   <View className="relative w-full h-32">
                     <Image
@@ -47,32 +48,37 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
                           "../../assets/images/adaptive-icon.png",
                       }}
                       alt={item?.images[0]?.name || "Hall Image"}
-                      className="w-full h-32 rounded-t-md object-cover"
+                      className="w-full h-full rounded-lg object-cover"
                     />
                   </View>
 
-                  {/* Text Section */}
-                  <View className="p-3 flex-1">
+                  {/* CustomText Section */}
+                  <View className="flex-1 mt-2">
                     <View className="flex flex-row justify-between items-center">
-                      <Text className="text-lg text-dark font-bold">
+                      <CustomText className="text-lg text-dark font-semibold">
                         {item?.name}
-                      </Text>
-                      <Text
+                      </CustomText>
+                      <CustomText
                         className={`${
                           item?.available ? "text-primary" : "text-accent"
-                        }`}
+                        } font-medium`}
                       >
                         {item.available ? "Available" : "Booked"}
-                      </Text>
+                      </CustomText>
                     </View>
-                    <Text className="text-gray-500" numberOfLines={1}>
+                    <CustomText
+                      className="text-gray-500 text-sm mt-1"
+                      numberOfLines={1}
+                    >
                       {item?.location}
-                    </Text>
-                    <Text className="text-dark">{item.capacity} students</Text>
+                    </CustomText>
+                    <CustomText className="text-dark text-sm mt-1">
+                      {item.capacity} students
+                    </CustomText>
                   </View>
 
                   {/* Button Section */}
-                  <View className="p-3">
+                  <View className="mt-3">
                     <Link
                       href={{
                         pathname:
@@ -92,11 +98,11 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
                             : "bg-accent opacity-70"
                         } py-2 rounded-md items-center`}
                       >
-                        <Text className="text-white font-bold">
+                        <CustomText className="text-white font-semibold">
                           {item.available && role !== "student"
                             ? "Book Now"
                             : "Detail"}
-                        </Text>
+                        </CustomText>
                       </TouchableOpacity>
                     </Link>
                   </View>

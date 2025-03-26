@@ -1,12 +1,7 @@
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
-import {
-  SafeAreaView,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { SafeAreaView, View, TouchableOpacity, Image } from "react-native";
+import { CustomText } from "../../components";
 
 interface IProps {
   color: boolean;
@@ -17,13 +12,13 @@ const OnboardBookScreen: React.FC<IProps> = ({ color, next }) => {
   return (
     <SafeAreaView className=" bg-secondary h-full flex justify-center items-center  px-10">
       <View className="my-4">
-        <Text className="text-dark text-3xl text-center font-bold my-2">
+        <CustomText className="text-dark text-3xl text-center font-bold my-2">
           Never Miss a Booking
-        </Text>
-        <Text className="text-dark ">
+        </CustomText>
+        <CustomText className="text-dark ">
           Receive notifications when a hall becomes available, when your booking
           starts, and when your time is almost up
-        </Text>
+        </CustomText>
       </View>
       <View className="my-4">
         <Image
@@ -43,7 +38,7 @@ const OnboardBookScreen: React.FC<IProps> = ({ color, next }) => {
         onPress={next}
         className="bg-primary rounded-full p-4 mt-12 w-full"
       >
-        <Text className="text-center text-white">Next</Text>
+        <CustomText className="text-center text-white">Next</CustomText>
       </TouchableOpacity>
     </SafeAreaView>
   );

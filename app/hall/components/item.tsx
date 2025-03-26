@@ -26,11 +26,15 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
     getRole();
   }, []);
 
+  const isBookable =
+    hall.available ||
+    (lastBooking &&
+      lastBooking.bookedTo &&
+      new Date(lastBooking.bookedTo) < date);
+
   return (
     <View className="w-1/2 p-2">
-      {/* Outer card container */}
-      <View className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72">
-        {/* Image Section */}
+      <View className="bg-white flex flex-col justify-between rounded-xl shadow-sm border border-gray-200 h-76 p-3">
         <View className="relative w-full h-32">
           <Image
             source={{
@@ -39,30 +43,30 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
                 "../../../assets/images/adaptive-icon.png",
             }}
             alt={hall?.images[0]?.name || "Hall Image"}
-            className="w-full h-32 rounded-t-md object-cover"
+            className="w-full h-full rounded-lg object-cover"
           />
         </View>
 
-        {/* Text Section */}
-        <View className="p-3 flex-1">
-          <Text className="text-lg text-dark font-bold">{hall?.name}</Text>
-          <Text className="text-dark" numberOfLines={1}>
+        <View className="flex-1 mt-2">
+          <Text className="text-lg text-dark font-semibold">{hall?.name}</Text>
+          <Text className="text-gray-500 text-sm mt-1" numberOfLines={1}>
             {hall?.location}
           </Text>
-          <Text className="text-dark">{hall.capacity} students</Text>
+          <Text className="text-dark text-sm mt-1">
+            {hall?.capacity} students
+          </Text>
           <Text
-            className={`${hall?.available ? "text-primary" : "text-accent"}`}
+            className={`${
+              hall?.available ? "text-primary" : "text-accent"
+            } font-medium mt-1`}
           >
             {hall.available ? "Available" : "Booked"}
           </Text>
         </View>
 
         {/* Button Section */}
-        <View className="p-3">
-          {hall.available ||
-          (lastBooking &&
-            lastBooking.bookedTo &&
-            new Date(lastBooking.bookedTo) < date) ? (
+        <View className="mt-3">
+          {isBookable ? (
             <Link
               href={{
                 pathname:
@@ -73,10 +77,10 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
                   hallData: JSON.stringify(hall),
                 },
               }}
-              asChild // Allows wrapping with TouchableOpacity
+              asChild
             >
               <TouchableOpacity className="bg-primary py-2 rounded-md items-center">
-                <Text className="text-white font-bold">Book Now</Text>
+                <Text className="text-white font-semibold">Book Now</Text>
               </TouchableOpacity>
             </Link>
           ) : (
@@ -90,10 +94,14 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
               asChild
             >
               <TouchableOpacity
-                className="bg-accent opacity-70 py-2 rounded-md items-center"
+                className={`${
+                  !hall.available && role === "admin"
+                    ? "bg-gray-400"
+                    : "bg-accent opacity-70"
+                } py-2 rounded-md items-center`}
                 disabled={role === "admin" && !hall.available}
               >
-                <Text className="text-white font-bold">
+                <Text className="text-white font-semibold">
                   {!hall.available && role === "admin"
                     ? "Already Booked"
                     : "Detail"}

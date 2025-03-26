@@ -4,8 +4,6 @@ import {
   FlatList,
   Text,
   ActivityIndicator,
-  Dimensions,
-  TouchableOpacity,
   StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,11 +15,9 @@ import { HallListItem } from "./components/item";
 import { screenHeight } from "../../constants/utils";
 import { router } from "expo-router";
 
-const numColumns = 2;
-
 const HallsScreen = () => {
   const { halls, getHalls, loading } = useHallState();
-  const [filter, setFilter] = useState<IHallQuery>();
+  const [filter, setFilter] = useState<IHallQuery>({ name: "" });
   const navigation: any = useNavigation();
 
   useEffect(() => {
@@ -45,59 +41,73 @@ const HallsScreen = () => {
     });
   };
 
+  const filteredHalls = halls?.filter((hall) =>
+    hall?.name?.toLowerCase().includes(filter?.name?.toLowerCase() as string)
+  );
+
   return (
-    <SafeAreaView
-      className=" px-4 bg-secondary my-0"
-      // style={{ marginTop: -10 }}
-    >
-      <View>
-        {/* <Text className="text-xl font-bold text-center text-dark">
-          Available Lecture Halls
-        </Text> */}
+    <SafeAreaView className="flex-1 bg-secondary px-4">
+      <View className="mt-4">
         <SearchBar
           placeholder="Search for a hall..."
-          lightTheme
-          className="rounded-lg border-primary border"
+          value={filter?.name || ""}
+          onChangeText={(name) => setFilter({ ...filter, name })}
           containerStyle={{
             backgroundColor: "transparent",
+            borderWidth: 0,
+            paddingHorizontal: 0,
+            paddingVertical: 8,
             borderBlockColor: "transparent",
-            padding: 0,
           }}
           inputContainerStyle={{
-            backgroundColor: "transparent",
-            borderStyle: "solid",
+            backgroundColor: "white",
+            borderRadius: 12,
             borderWidth: 1,
+            borderColor: "#e5e7eb",
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.1,
+            shadowRadius: 3,
+            elevation: 2,
           }}
-          value={filter?.name}
-          onChangeText={(name) => setFilter({ ...filter, name })}
-          // onChange={(e) => setFilter({...filter, name: e.target.})}
+          inputStyle={{
+            color: "#1f2937",
+            fontSize: 16,
+          }}
+          searchIcon={{ name: "search", color: "#6b7280" }}
+          clearIcon={{ name: "close", color: "#6b7280" }}
         />
       </View>
-      {/* {loading && <Text>Loading...</Text>} */}
-      {!loading && halls.length > 0 && (
-        <View className="">
-          <FlatList
-            data={halls}
-            style={{ height: screenHeight - 150 }}
-            numColumns={2}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => (
-              <HallListItem
-                hall={item}
-                onPress={() => navigateToCreateHall(item)}
-              />
-            )}
-            columnWrapperStyle={{ justifyContent: "space-between" }}
-          />
+
+      {!loading && filteredHalls?.length > 0 ? (
+        <FlatList
+          data={filteredHalls}
+          style={{ flex: 1 }}
+          numColumns={2}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <HallListItem
+              hall={item}
+              onPress={() => navigateToCreateHall(item)}
+            />
+          )}
+          columnWrapperStyle={{
+            justifyContent: "space-between",
+            paddingVertical: 8,
+          }}
+          contentContainerStyle={{ paddingBottom: 16 }}
+        />
+      ) : !loading ? (
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-dark text-lg font-semibold">
+            No halls found
+          </Text>
+        </View>
+      ) : (
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-dark text-lg font-semibold">Loading...</Text>
         </View>
       )}
-      {/* <TouchableOpacity
-        onPress={() => navigateToCreateHall()}
-        style={{ position: "absolute", bottom: 2, right: 0, left: 0 }}
-        className="border-none  rounded-xl p-3 mx-4 flex justify-center items-center bg-blue-800"
-      >
-        <Text className="text-white">Create New Hall</Text>
-      </TouchableOpacity> */}
     </SafeAreaView>
   );
 };

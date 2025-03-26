@@ -175,8 +175,9 @@ const PushNotificationHandler = () => {
 };
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    FiraCode: require("../assets/fonts/FiraCode-Regular.ttf"),
   });
 
   useEffect(() => {
@@ -194,7 +195,7 @@ export default function RootLayout() {
       />
     );
   }
-
+  console.log({ fontError });
   return (
     <RootSiblingParent>
       <AppContextProvider>

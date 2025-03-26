@@ -4,10 +4,10 @@ import {
   Button,
   Image,
   SafeAreaView,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { CustomText } from "../../components";
 
 interface IProps {
   next: () => void;
@@ -17,13 +17,13 @@ const WelcomeScreen: React.FC<IProps> = ({ color, next }) => {
   return (
     <SafeAreaView className="bg-secondary h-full flex justify-center items-center px-10">
       <View className="my-4">
-        <Text className="text-dark text-3xl text-center font-bold my-2">
+        <CustomText className="text-dark text-3xl text-center font-bold my-2">
           Welcome to Class Book
-        </Text>
-        <Text className="text-dark text-xs">
+        </CustomText>
+        <CustomText className="text-dark text-xs">
           Easily book lecture halls, get real-time availability updates, and
           never miss a reservation with notifications. Let's get started!
-        </Text>
+        </CustomText>
       </View>
       <View className="my-4">
         <Image
@@ -43,7 +43,7 @@ const WelcomeScreen: React.FC<IProps> = ({ color, next }) => {
         className="bg-primary rounded-full p-4 mt-12 w-full"
         onPress={next}
       >
-        <Text className="text-center text-white">Next</Text>
+        <CustomText className="text-center text-white">Next</CustomText>
       </TouchableOpacity>
     </SafeAreaView>
   );
