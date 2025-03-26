@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "expo-router";
+import { Link, Redirect, useNavigation } from "expo-router";
 import { useHallState } from "../hall/context";
 import { IHallQuery } from "../hall/model";
 import { useProfileState } from "../profile/context";
 import AvailableHalls from "./available";
 import HeroCarousel from "./hero";
+import { useAuthState } from "../auth/context";
+import { ProtectedRoute } from "../../hooks/protectedRoute";
 
 const HomeScreen = () => {
   const navigation: any = useNavigation();
@@ -21,11 +23,11 @@ const HomeScreen = () => {
   }, [filter]);
 
   return (
-    <SafeAreaView>
+    <ProtectedRoute>
       <View className={"px-4 bg-secondary  h-full"}>
         <View className="">
           <Text className={"text-xl my-2 text-dark "}>{`Welcome Back, ${
-            profile.firstName || "Admin"
+            profile?.firstName || "Admin"
           }!`}</Text>
         </View>
 
@@ -33,7 +35,8 @@ const HomeScreen = () => {
 
         <View className="flex-row justify-between my-4">
           {profile?.role === "admin" && (
-            <TouchableOpacity
+            <Link
+              href="/hall/create"
               className="items-center"
               onPress={() => navigation.navigate("CreateHall")}
             >
@@ -43,7 +46,7 @@ const HomeScreen = () => {
                 resizeMode="cover"
               />
               <Text className="text-dark">Create a Hall</Text>
-            </TouchableOpacity>
+            </Link>
           )}
 
           <TouchableOpacity
@@ -58,9 +61,10 @@ const HomeScreen = () => {
             <Text className="text-dark">View Profile</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <Link
+            href="/hall"
             className="items-center"
-            onPress={() => navigation.navigate("HallPage")}
+            // onPress={() => navigation.navigate("HallPage")}
           >
             <Image
               source={require("../../assets/images/Digital nomad-pana.png")}
@@ -68,12 +72,15 @@ const HomeScreen = () => {
               resizeMode="cover"
             />
             <Text className="text-dark">Explore Halls</Text>
-          </TouchableOpacity>
+          </Link>
         </View>
 
-        <AvailableHalls halls={halls} loading={loading} />
+        <AvailableHalls
+          halls={halls?.filter((h) => h.available)}
+          loading={loading}
+        />
       </View>
-    </SafeAreaView>
+    </ProtectedRoute>
   );
 };
 
