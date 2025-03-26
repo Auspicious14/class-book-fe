@@ -10,7 +10,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ["SpaceMono", "FiraCode", "sans-serif"],
+        sans: ["FiraCode", "SpaceMono", "sans-serif"],
         "space-mono": ["SpaceMono", "sans-serif"],
         "fira-code": ["FiraCode", "sans-serif"],
       },
