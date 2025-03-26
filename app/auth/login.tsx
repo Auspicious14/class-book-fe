@@ -16,6 +16,7 @@ import { Feather } from "@expo/vector-icons";
 import Toast from "react-native-root-toast";
 import { useAuthState } from "./context";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { Link, Redirect } from "expo-router";
 
 type RootStackParamList = {
   AdminTabs: undefined;
@@ -34,21 +35,24 @@ const LoginScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const windowHeight = Dimensions.get("window").height;
   const [showPassword, setShowPassword] = useState<boolean>(true);
-  const { login, loading } = useAuthState();
+  const { auth, login, loading } = useAuthState();
+
+  if (auth && auth.token) {
+    if (auth.role === "student") return <Redirect href="/(student)" />;
+    if (auth.role === "admin") return <Redirect href="/(admin)" />;
+    if (auth.role === "classRep") return <Redirect href="/(classRep)" />;
+  }
 
   const handleSubmit = async (val: any) => {
     const { email, password } = val;
     try {
-      const role = await login(email, password);
-      if (role === "admin") {
-        navigation.navigate("AdminTabs");
-      } else if (role === "classRep") {
-        navigation.navigate("ClassRepTabs");
-      } else if (role === "student") {
-        navigation.navigate("StudentTabs");
-      }
+      await login(email, password);
     } catch (error: any) {
-      Toast.show(error.message || "An error occurred", {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "An error occurred during login";
+      Toast.show(errorMessage, {
         backgroundColor: "red",
         textColor: "white",
       });
@@ -129,11 +133,12 @@ const LoginScreen = () => {
                   <Text className="text-dark">
                     New to this? create an account here
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate("Signup")}
+                  <Link
+                    href={"/auth/signup"}
+                    // onPress={() => navigation.navigate("Signup")}
                   >
                     <Text className="text-primary">Signup</Text>
-                  </TouchableOpacity>
+                  </Link>
                 </View>
               </View>
             )}

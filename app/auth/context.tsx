@@ -24,6 +24,8 @@ interface IAuthState {
   login: (email: string, password: string) => Promise<any>;
   signup: (query: IAuthQuery) => Promise<void>;
   logout: () => Promise<void>;
+  setAuth: React.Dispatch<React.SetStateAction<IAuthProps | null>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AuthContext = React.createContext<IAuthState | undefined>(undefined);
@@ -43,31 +45,33 @@ interface IProps {
 export const AuthContextProvider: React.FC<IProps> = ({ children }) => {
   const [auth, setAuth] = useState<IAuthProps | null>(null);
   const [isFirstLaunch, setIsFirstLaunch] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // useEffect(() => {
-  //   const initializeApp = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const authStatus = await fetchToken();
-  //       if (authStatus?.onboardingIncomplete) {
-  //         setIsFirstLaunch(true);
-  //       } else if (authStatus?.loggedOut) {
-  //         setIsFirstLaunch(false);
-  //         setAuth(null);
-  //       } else if (authStatus?.token) {
-  //         setIsFirstLaunch(false);
-  //         setAuth({ token: authStatus.token, role: authStatus.role });
-  //       }
-  //     } catch (error) {
-  //       console.error("Error initializing app:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const initializeApp = async () => {
+      setLoading(true); // Already true, but kept for clarity
+      try {
+        const authStatus = await fetchToken();
+        if (authStatus?.onboardingIncomplete) {
+          setIsFirstLaunch(true);
+          setAuth(null);
+        } else if (authStatus?.loggedOut || !authStatus) {
+          setIsFirstLaunch(false);
+          setAuth(null);
+        } else if (authStatus?.token) {
+          setIsFirstLaunch(false);
+          setAuth({ token: authStatus.token, role: authStatus.role });
+        }
+      } catch (error) {
+        console.error("Error initializing app:", error);
+        setAuth(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   initializeApp();
-  // }, []);
+    initializeApp();
+  }, []);
 
   const login = async (email: string, password: string) => {
     setLoading(true);
@@ -96,19 +100,18 @@ export const AuthContextProvider: React.FC<IProps> = ({ children }) => {
         await AsyncStorage.setItem("tokenExpiry", expirationDate.toString());
         setAuth({ token: data.token, role: data.data.role });
 
-        // Uncomment and update navigation logic
         switch (role) {
           case "admin":
-            router.replace("/(admin)/home");
+            router.replace("/(admin)");
             break;
           case "classRep":
-            router.replace("/(classRep)/home");
+            router.replace("/(classRep)");
             break;
           case "student":
-            router.replace("/(student)/home");
+            router.replace("/(student)");
             break;
           default:
-            router.replace("/(tabs)/home");
+            router.replace("/(admin)");
         }
       }
       return role;
@@ -137,7 +140,7 @@ export const AuthContextProvider: React.FC<IProps> = ({ children }) => {
           backgroundColor: "green",
           textColor: "white",
         });
-        navigate("Login");
+        router.replace("/auth/login");
       }
     } catch (error: any) {
       const errorMessage =
@@ -157,7 +160,7 @@ export const AuthContextProvider: React.FC<IProps> = ({ children }) => {
       await AsyncStorage.removeItem("secret");
       await AsyncStorage.removeItem("tokenExpiry");
       setAuth(null);
-      navigate("Login");
+      router.replace("/auth/login");
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -172,6 +175,8 @@ export const AuthContextProvider: React.FC<IProps> = ({ children }) => {
         login,
         signup,
         logout,
+        setAuth,
+        setLoading,
       }}
     >
       {children}
