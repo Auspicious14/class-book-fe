@@ -16,11 +16,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Feather } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import Toast from "react-native-root-toast";
 import Dropdown from "react-native-input-select";
 import { useNavigation } from "@react-navigation/native";
 import { axiosApi } from "../../components/api";
+import { useAuthState } from "./context";
+import { LinearGradient } from "expo-linear-gradient";
+import { CustomText } from "../../components";
+import { Link } from "expo-router";
 
 const FormSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name is required"),
@@ -33,228 +37,276 @@ const FormSchema = Yup.object().shape({
 });
 
 const SignUpScreen = () => {
+  const { auth, signup, loading } = useAuthState();
   const windowHeight = Dimensions.get("window").height;
   const navigation: any = useNavigation();
-  const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const [role, setRole] = useState<string>("");
 
   const handleSubmit = async (val: any) => {
     const { email, password, firstName, lastName } = val;
-    setLoading(true);
     try {
-      const { api } = await axiosApi();
-      const response = await api.post(`/auth/signup`, {
-        email,
-        password,
-        firstName,
-        lastName,
-        role,
-      });
-
-      const data = response.data;
-      if (
-        data.message.includes("User validation failed") ||
-        data.message === "Invalid email or password"
-      ) {
-        Toast.show(data.message, {
-          backgroundColor: "red",
-          textColor: "white",
-        });
-      }
-      if (data.message.includes("successfully")) {
-        Toast.show(data.message, {
-          backgroundColor: "green",
-          textColor: "white",
-        });
-        navigation.navigate("Login");
-      }
+      await signup({ email, password, firstName, lastName, role });
     } catch (error: any) {
-      setLoading(false);
-      Toast.show(error?.message, {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "An error occurred during login";
+      Toast.show(errorMessage, {
         backgroundColor: "red",
         textColor: "white",
       });
-    } finally {
-      setLoading(false);
     }
   };
-  console.log({ role });
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
     >
-      <SafeAreaView
-        style={{ flexGrow: 1, justifyContent: "center", padding: 20 }}
-      >
-        <View className={"bg-secondary p-8"}>
-          <View className={"flex justify-center items-center "}>
-            <Image
-              source={require("../../assets/images/Thesis-pana.png")}
-              className="flex justify-center w-40 h-40 object-cover"
-            />
-            <Text className={"text-2xl mb-4 text-center text-dark"}>
-              Create an Account
-            </Text>
-          </View>
-          <ScrollView style={{ height: windowHeight - 280 }}>
-            <>
-              <Formik
-                initialValues={{
-                  firstName: "",
-                  lastName: "",
-                  email: "",
-                  password: "",
-                  confirmPassword: "",
-                }}
-                validationSchema={FormSchema}
-                onSubmit={handleSubmit}
-              >
-                {({
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                  values,
-                  errors,
-                }) => (
-                  <>
-                    <Text className="mb-2 text-dark">First Name</Text>
+      <SafeAreaView className="flex-1 bg-secondary">
+        <LinearGradient
+          colors={["#4caf50", "#6b7280"]}
+          className="h-72 flex justify-center items-center"
+        >
+          <Image
+            source={require("../../assets/images/Thesis-pana.png")}
+            className="w-48 h-48 object-contain"
+          />
+          <CustomText className="text-2xl text-white mt-4">
+            Create an Account
+          </CustomText>
+        </LinearGradient>
+
+        <ScrollView className="flex-1">
+          <View className="bg-white rounded-t-3xl shadow-sm mx-6 -mt-12 p-6">
+            <Formik
+              initialValues={{
+                firstName: "",
+                lastName: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+              }}
+              validationSchema={FormSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+                <View className="space-y-6">
+                  <View>
+                    <CustomText className="text-dark text-sm font-semibold mb-1">
+                      First Name
+                    </CustomText>
                     <TextInput
-                      className={"border p-2 rounded-md border-gray-200 "}
+                      className="bg-white p-3 rounded-xl border border-gray-200 text-dark"
                       placeholder="First Name"
+                      placeholderTextColor="#6b7280"
                       value={values.firstName}
                       onBlur={handleBlur("firstName")}
                       onChangeText={handleChange("firstName")}
+                      autoCapitalize="words"
                     />
-                    <Text className="text-red-500">{errors.firstName}</Text>
-                    <Text className="mb-2 text-dark">Last Name</Text>
+                    {errors.firstName && (
+                      <CustomText className="text-red-500 text-sm mt-1">
+                        {errors.firstName}
+                      </CustomText>
+                    )}
+                  </View>
+
+                  <View>
+                    <CustomText className="text-dark text-sm font-semibold mb-1">
+                      Last Name
+                    </CustomText>
                     <TextInput
-                      className={"border p-2 rounded-md border-gray-200"}
+                      className="bg-white p-3 rounded-xl border border-gray-200 text-dark"
                       placeholder="Last Name"
+                      placeholderTextColor="#6b7280"
                       value={values.lastName}
                       onBlur={handleBlur("lastName")}
                       onChangeText={handleChange("lastName")}
+                      autoCapitalize="words"
                     />
-                    <Text className="text-red-500">{errors.lastName}</Text>
-                    <Text className="my-2 text-dark">Email</Text>
+                    {errors.lastName && (
+                      <CustomText className="text-red-500 text-sm mt-1">
+                        {errors.lastName}
+                      </CustomText>
+                    )}
+                  </View>
+                  <View>
+                    <CustomText className="text-dark text-sm font-semibold mb-1">
+                      Email
+                    </CustomText>
                     <TextInput
-                      className={"border p-2 rounded-md border-gray-200"}
-                      placeholder="Email"
+                      className="bg-white p-3 rounded-xl border border-gray-200 text-dark"
+                      placeholder="johndoe@hr.inc"
+                      placeholderTextColor="#6b7280"
                       value={values.email}
                       onBlur={handleBlur("email")}
                       onChangeText={handleChange("email")}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
                     />
-                    <Text className="text-red-500">{errors.email}</Text>
+                    {errors.email && (
+                      <CustomText className="text-red-500 text-sm mt-1">
+                        {errors.email}
+                      </CustomText>
+                    )}
+                  </View>
+
+                  <View>
+                    <CustomText className="text-dark text-sm font-semibold mb-1">
+                      Role
+                    </CustomText>
                     <Dropdown
-                      label="Role"
-                      selectedValue={role}
                       options={[
                         { label: "Admin", value: "admin" },
                         { label: "Class Representative", value: "classRep" },
                         { label: "Student", value: "student" },
                       ]}
+                      selectedValue={role}
+                      onValueChange={(value: string) => setRole(value)}
                       placeholder="Select a role"
-                      autoCloseOnSelect
                       dropdownStyle={{
-                        borderStyle: "solid",
-                        borderColor: "gray",
+                        backgroundColor: "white",
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        borderColor: "#d1d5db",
+                        padding: 12,
                       }}
-                      labelStyle={{
-                        marginHorizontal: 4,
-                        color: "#666666",
-                        fontSize: 14,
-                        fontWeight: "700",
+                      dropdownContainerStyle={{
+                        backgroundColor: "white",
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        borderColor: "#d1d5db",
+                        shadowColor: "#000",
+                        shadowOffset: { width: 0, height: 1 },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 4,
+                        elevation: 2,
                       }}
                       placeholderStyle={{
-                        padding: 0,
-                        margin: 0,
-                        color: "#666666",
+                        color: "#6b7280",
+                        fontSize: 16,
                       }}
-                      primaryColor={"#666666"}
-                      onValueChange={(value: string) => setRole(value)}
+                      selectedItemStyle={{
+                        color: "#1f2937", // Matches text-dark
+                        fontSize: 16,
+                      }}
+                      // listItemStyle={{
+                      //   paddingVertical: 8,
+                      //   paddingHorizontal: 12,
+                      // }}
+                      primaryColor="#3b82f6"
                     />
+                  </View>
+
+                  <View>
+                    <CustomText className="text-dark text-sm font-semibold mb-1">
+                      Password
+                    </CustomText>
                     <View className="relative">
-                      <Text className="mb-2 text-dark">Password</Text>
                       <TextInput
-                        className={"border p-2 rounded-md border-gray-200"}
-                        placeholder="Password"
+                        className="bg-white p-3 rounded-xl border border-gray-200 text-dark"
+                        placeholder="***********"
+                        placeholderTextColor="#6b7280"
                         value={values.password}
                         onBlur={handleBlur("password")}
                         onChangeText={handleChange("password")}
                         secureTextEntry={showPassword}
                       />
-                      <Text className="text-red-500">{errors.password}</Text>
-                      <View className="absolute top-12 right-4">
-                        {showPassword ? (
-                          <Feather
-                            size={15}
-                            name="eye-off"
-                            onPress={() => setShowPassword(!showPassword)}
-                          />
-                        ) : (
-                          <Feather
-                            size={15}
-                            name="eye"
-                            onPress={() => setShowPassword(!showPassword)}
-                          />
-                        )}
-                      </View>
+                      <TouchableOpacity
+                        className="absolute right-3 top-1/2 -translate-y-1/2"
+                        onPress={() => setShowPassword(!showPassword)}
+                      >
+                        <Feather
+                          name={showPassword ? "eye-off" : "eye"}
+                          size={20}
+                          color="#6b7280"
+                        />
+                      </TouchableOpacity>
                     </View>
+                    {errors.password && (
+                      <CustomText className="text-red-500 text-sm mt-1">
+                        {errors.password}
+                      </CustomText>
+                    )}
+                  </View>
+
+                  <View>
+                    <CustomText className="text-dark text-sm font-semibold mb-1">
+                      Confirm Password
+                    </CustomText>
                     <View className="relative">
-                      <Text className="mb-2 text-dark">Confirm Password</Text>
                       <TextInput
-                        className={"border p-2 mb-4 rounded-md border-gray-200"}
-                        placeholder="Password"
+                        className="bg-white p-3 rounded-xl border border-gray-200 text-dark"
+                        placeholder="***********"
+                        placeholderTextColor="#6b7280"
                         value={values.confirmPassword}
                         onBlur={handleBlur("confirmPassword")}
                         onChangeText={handleChange("confirmPassword")}
                         secureTextEntry={showPassword}
                       />
-                      <Text className="text-red-500">
-                        {errors.confirmPassword}
-                      </Text>
-                      <View className="absolute top-12 right-4">
-                        {showPassword ? (
-                          <Feather
-                            size={15}
-                            name="eye-off"
-                            onPress={() => setShowPassword(!showPassword)}
-                          />
-                        ) : (
-                          <Feather
-                            size={15}
-                            name="eye"
-                            onPress={() => setShowPassword(!showPassword)}
-                          />
-                        )}
-                      </View>
-                    </View>
-                    <TouchableOpacity
-                      disabled={loading}
-                      className="border-none rounded-xl p-3 my-4 flex justify-center items-center bg-primary"
-                      onPress={() => handleSubmit()}
-                    >
-                      <Text className="text-white ">
-                        {loading ? "Loading..." : "Sign Up"}
-                      </Text>
-                    </TouchableOpacity>
-
-                    <View className="flex flex-row justify-center gap-2 items-center">
-                      <Text className="text-dark">Already signed up?</Text>
                       <TouchableOpacity
-                        onPress={() => navigation.navigate("Login")}
+                        className="absolute right-3 top-1/2 -translate-y-1/2"
+                        onPress={() => setShowPassword(!showPassword)}
                       >
-                        <Text className="text-primary">Login</Text>
+                        <Feather
+                          name={showPassword ? "eye-off" : "eye"}
+                          size={20}
+                          color="#6b7280"
+                        />
                       </TouchableOpacity>
                     </View>
-                  </>
-                )}
-              </Formik>
-            </>
-          </ScrollView>
-        </View>
+                    {errors.confirmPassword && (
+                      <CustomText className="text-red-500 text-sm mt-1">
+                        {errors.confirmPassword}
+                      </CustomText>
+                    )}
+                  </View>
+                  <TouchableOpacity
+                    disabled={loading}
+                    className={`bg-primary py-3 rounded-xl flex justify-center items-center ${
+                      loading ? "opacity-80" : ""
+                    }`}
+                    onPress={() => handleSubmit()}
+                  >
+                    <CustomText className="text-white text-base font-semibold">
+                      {loading ? (
+                        <>
+                          <AntDesign
+                            name="loading1"
+                            size={20}
+                            color="white"
+                            className="mr-2"
+                          />
+                          <CustomText className="text-white font-semibold">
+                            Processing...
+                          </CustomText>
+                        </>
+                      ) : (
+                        <CustomText className="text-white font-semibold">
+                          Signup
+                        </CustomText>
+                      )}
+                    </CustomText>
+                  </TouchableOpacity>
+
+                  <View className="flex-row justify-center items-center space-x-2">
+                    <CustomText className="text-dark text-sm">
+                      Already signed up?
+                    </CustomText>
+                    <Link href="/auth/login">
+                      <CustomText className="text-primary text-sm font-semibold">
+                        Login
+                      </CustomText>
+                    </Link>
+                  </View>
+                </View>
+              )}
+            </Formik>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

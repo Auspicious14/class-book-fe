@@ -35,89 +35,75 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
 
   return (
     <View className="w-1/2 p-2">
-      <View className="bg-white flex flex-col justify-between rounded-xl shadow-sm border border-gray-200 h-76 p-3">
-        <View className="relative w-full h-32">
+      <TouchableOpacity
+        className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+        onPress={() => onPress(hall)}
+      >
+        <View className="w-full h-36">
           <Image
             source={{
-              uri:
-                hall?.images[0]?.uri ||
-                "../../../assets/images/adaptive-icon.png",
+              uri: hall?.images[0]?.uri || "https://via.placeholder.com/150", // Fallback image
             }}
-            alt={hall?.images[0]?.name || "Hall Image"}
-            className="w-full h-full rounded-lg object-cover"
+            className="w-full h-full object-cover"
           />
+          <View className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full shadow-sm">
+            <CustomText
+              className={`text-xs font-semibold ${
+                hall.available ? "text-primary" : "text-accent"
+              }`}
+            >
+              {hall.available ? "Available" : "Booked"}
+            </CustomText>
+          </View>
         </View>
 
-        <View className="flex-1 mt-2">
-          <CustomText className="text-lg text-dark font-semibold">
+        <View className="p-3">
+          <CustomText
+            className="text-dark text-lg font-semibold"
+            numberOfLines={1}
+          >
             {hall?.name}
           </CustomText>
           <CustomText className="text-gray-500 text-sm mt-1" numberOfLines={1}>
-            {hall?.location}
+            {hall?.location || "Unknown Location"}
           </CustomText>
           <CustomText className="text-dark text-sm mt-1">
             {hall?.capacity} students
           </CustomText>
-          <CustomText
-            className={`${
-              hall?.available ? "text-primary" : "text-accent"
-            } font-medium mt-1`}
-          >
-            {hall.available ? "Available" : "Booked"}
-          </CustomText>
-        </View>
 
-        {/* Button Section */}
-        <View className="mt-3">
-          {isBookable ? (
-            <Link
-              href={{
-                pathname:
-                  hall.available && role === "admin"
-                    ? "/hall/create"
-                    : "/hall/detail",
-                params: {
-                  hallData: JSON.stringify(hall),
-                },
-              }}
-              asChild
+          <Link
+            href={{
+              pathname:
+                isBookable && role === "admin"
+                  ? "/hall/create"
+                  : "/hall/detail",
+              params: { hallData: JSON.stringify(hall) },
+            }}
+            asChild
+          >
+            <TouchableOpacity
+              className={`mt-3 py-2 rounded-md items-center ${
+                isBookable
+                  ? "bg-primary"
+                  : role === "admin"
+                  ? "bg-gray-400"
+                  : "bg-accent opacity-70"
+              }`}
+              disabled={!isBookable && role === "admin"}
             >
-              <TouchableOpacity className="bg-primary py-2 rounded-md items-center">
-                <CustomText className="text-white font-semibold">
-                  {hall.available && role === "admin"
-                    ? "Update Hall"
-                    : " Book Now"}
-                </CustomText>
-              </TouchableOpacity>
-            </Link>
-          ) : (
-            <Link
-              href={{
-                pathname: "/hall/detail",
-                params: {
-                  hallData: JSON.stringify(hall),
-                },
-              }}
-              asChild
-            >
-              <TouchableOpacity
-                className={`${
-                  !hall.available && role === "admin"
-                    ? "bg-gray-400"
-                    : "bg-accent opacity-70"
-                } py-2 rounded-md items-center`}
-                disabled={role === "admin" && !hall.available}
-              >
-                <CustomText className="text-white font-semibold">
-                  {!hall.available && role === "admin"
-                    ? "Already Booked"
-                    : "Detail"}
-                </CustomText>
-              </TouchableOpacity>
-            </Link>
-          )}
+              <CustomText className="text-white text-sm font-semibold">
+                {isBookable && role === "admin"
+                  ? "Update Hall"
+                  : isBookable
+                  ? "Book Now"
+                  : role === "admin"
+                  ? "Already Booked"
+                  : "View Details"}
+              </CustomText>
+            </TouchableOpacity>
+          </Link>
         </View>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

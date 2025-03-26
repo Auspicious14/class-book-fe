@@ -175,8 +175,8 @@ const PushNotificationHandler = () => {
 };
 
 export default function RootLayout() {
-  const [fontsLoaded, fontError] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+  const [fontsLoaded] = useFonts({
+    // SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     FiraCode: require("../assets/fonts/FiraCode-Regular.ttf"),
   });
 
@@ -195,9 +195,9 @@ export default function RootLayout() {
       />
     );
   }
-  console.log({ fontError });
+  console.log({ fontsLoaded });
   return (
-    <RootSiblingParent>
+    <>
       <AppContextProvider>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="onboarding/index" />
@@ -206,9 +206,10 @@ export default function RootLayout() {
           <Stack.Screen name="(admin)" />
           <Stack.Screen name="(classRep)" />
           <Stack.Screen name="(student)" />
+          <Stack.Screen name="hall/detail" />
         </Stack>
         <PushNotificationHandler />
       </AppContextProvider>
-    </RootSiblingParent>
+    </>
   );
 }

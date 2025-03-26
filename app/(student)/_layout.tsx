@@ -14,6 +14,7 @@ export default function StudentLayout() {
         name="index"
         options={{
           headerShown: false,
+          tabBarLabel: "Home",
           tabBarIcon: () => (
             <Ionicons name="home" size={24} color={"#4CAF50"} />
           ),
@@ -23,7 +24,7 @@ export default function StudentLayout() {
         name="hall"
         options={{
           headerShown: false,
-          headerTitle: "",
+          tabBarLabel: "Halls",
           tabBarIcon: () => (
             <Ionicons name="list" size={24} color={"#4CAF50"} />
           ),
@@ -33,7 +34,7 @@ export default function StudentLayout() {
         name="profile"
         options={{
           headerShown: false,
-          headerTitle: "",
+          tabBarLabel: "Profile",
           tabBarIcon: () => (
             <Ionicons name="person" size={24} color={"#4CAF50"} />
           ),

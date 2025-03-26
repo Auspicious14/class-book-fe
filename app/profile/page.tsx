@@ -91,7 +91,6 @@ const ProfileScreen = () => {
             </View>
           </View>
 
-          {/* Sign Out Button */}
           <TouchableOpacity
             onPress={logout}
             className="mt-6 mx-4 border border-red-500 py-3 rounded-xl items-center shadow-sm"

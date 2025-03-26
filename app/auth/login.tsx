@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   TextInput,
   TouchableOpacity,
   Image,
@@ -12,19 +11,12 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Feather } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import Toast from "react-native-root-toast";
 import { useAuthState } from "./context";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Link, Redirect } from "expo-router";
-
-type RootStackParamList = {
-  AdminTabs: undefined;
-  ClassRepTabs: undefined;
-  StudentTabs: undefined;
-  Login: undefined;
-  Signup: undefined;
-};
+import { CustomText } from "../../components";
+import { LinearGradient } from "expo-linear-gradient";
 
 const FormSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -32,7 +24,6 @@ const FormSchema = Yup.object().shape({
 });
 
 const LoginScreen = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const windowHeight = Dimensions.get("window").height;
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const { auth, login, loading } = useAuthState();
@@ -43,7 +34,7 @@ const LoginScreen = () => {
     if (auth.role === "classRep") return <Redirect href="/(classRep)" />;
   }
 
-  const handleSubmit = async (val: any) => {
+  const onSubmit = async (val: any) => {
     const { email, password } = val;
     try {
       await login(email, password);
@@ -65,79 +56,112 @@ const LoginScreen = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
     >
-      <SafeAreaView
-        style={{ height: windowHeight }}
-        className={"bg-secondary p-8"}
-      >
-        <View>
-          <View className={"flex justify-center items-center "}>
-            <Image
-              source={require("../../assets/images/Key-pana.png")}
-              className="flex justify-center w-40 h-40 object-cover"
-            />
-            <Text className={"text-2xl mb-4 text-center text-dark"}>Login</Text>
-          </View>
+      <SafeAreaView className="flex-1 bg-secondary">
+        <LinearGradient
+          colors={["#4caf50", "#6b7280"]}
+          className="h-72 flex justify-center items-center"
+        >
+          <Image
+            source={require("../../assets/images/Key-pana.png")}
+            className="w-48 h-48 object-contain"
+          />
+          <CustomText className="text-2xl !text-white mt-4">Login</CustomText>
+        </LinearGradient>
+
+        <View className="bg-white rounded-t-3xl shadow-sm mx-6 -mt-12 p-6 flex-1">
           <Formik
             initialValues={{ email: "", password: "" }}
             validationSchema={FormSchema}
-            onSubmit={handleSubmit}
+            onSubmit={onSubmit}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-              <View>
-                <Text className="my-2 text-dark">Email</Text>
-                <TextInput
-                  className={"border p-2 rounded-md border-gray-200"}
-                  placeholder="johndoe@hr.inc"
-                  value={values.email}
-                  onBlur={handleBlur("email")}
-                  onChangeText={handleChange("email")}
-                />
-                <Text className="text-red-500">{errors.email}</Text>
-                <View className="relative">
-                  <Text className="my-2 text-dark">Password</Text>
+              <View className="space-y-6">
+                <View>
+                  <CustomText className="text-dark text-sm font-semibold mb-1">
+                    Email
+                  </CustomText>
                   <TextInput
-                    className={"border p-2 rounded-md border-gray-200"}
-                    placeholder="***********"
-                    value={values.password}
-                    onBlur={handleBlur("password")}
-                    onChangeText={handleChange("password")}
-                    secureTextEntry={showPassword}
+                    className="bg-white p-3 rounded-xl border border-gray-200 text-dark"
+                    placeholder="johndoe@hr.inc"
+                    placeholderTextColor="#6b7280"
+                    value={values.email}
+                    onBlur={handleBlur("email")}
+                    onChangeText={handleChange("email")}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
                   />
-                  <Text className="text-red-500">{errors.password}</Text>
-                  <View className="absolute top-12 right-4 ">
-                    {showPassword ? (
-                      <Feather
-                        size={15}
-                        name="eye-off"
-                        onPress={() => setShowPassword(!showPassword)}
-                      />
-                    ) : (
-                      <Feather
-                        size={15}
-                        name="eye"
-                        onPress={() => setShowPassword(!showPassword)}
-                      />
-                    )}
-                  </View>
+                  {errors.email && (
+                    <CustomText className="text-red-500 text-sm mt-1">
+                      {errors.email}
+                    </CustomText>
+                  )}
                 </View>
+
+                <View>
+                  <CustomText className="text-dark text-sm font-semibold mb-1">
+                    Password
+                  </CustomText>
+                  <View className="relative">
+                    <TextInput
+                      className="bg-white p-3 rounded-xl border border-gray-200 text-dark"
+                      placeholder="***********"
+                      placeholderTextColor="#6b7280"
+                      value={values.password}
+                      onBlur={handleBlur("password")}
+                      onChangeText={handleChange("password")}
+                      secureTextEntry={showPassword}
+                    />
+                    <TouchableOpacity
+                      className="absolute right-3 top-1/4 -translate-y-1/2"
+                      onPress={() => setShowPassword(!showPassword)}
+                    >
+                      <Feather
+                        name={showPassword ? "eye-off" : "eye"}
+                        size={20}
+                        color="#6b7280"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {errors.password && (
+                    <CustomText className="text-red-500 text-sm mt-1">
+                      {errors.password}
+                    </CustomText>
+                  )}
+                </View>
+
                 <TouchableOpacity
                   disabled={loading}
-                  className="border-none text-white rounded-xl p-3 my-4 flex justify-center items-center bg-primary"
+                  className={`bg-primary py-3 rounded-xl flex justify-center items-center ${
+                    loading ? "opacity-80" : ""
+                  }`}
                   onPress={() => handleSubmit()}
                 >
-                  <Text className="text-white ">
-                    {loading ? "Loading..." : "Login"}
-                  </Text>
+                  <CustomText className="text-white text-base font-semibold">
+                    {loading ? (
+                      <>
+                        <AntDesign
+                          name="loading1"
+                          size={20}
+                          color="white"
+                          className="mr-2"
+                        />
+                        <CustomText className="text-white font-semibold">
+                          Processing...
+                        </CustomText>
+                      </>
+                    ) : (
+                      <CustomText className="text-white font-semibold">
+                        Login
+                      </CustomText>
+                    )}
+                  </CustomText>
                 </TouchableOpacity>
-                <View className="flex flex-row justify-center gap-2 items-center">
-                  <Text className="text-dark">
-                    New to this? create an account here
-                  </Text>
-                  <Link
-                    href={"/auth/signup"}
-                    // onPress={() => navigation.navigate("Signup")}
-                  >
-                    <Text className="text-primary">Signup</Text>
+
+                <View className="flex-row justify-center items-center space-x-2">
+                  <Link href="/auth/signup">
+                    <CustomText className="text-primary text-sm font-semibold">
+                      New to this? Create an account
+                    </CustomText>
                   </Link>
                 </View>
               </View>
