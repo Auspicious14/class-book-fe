@@ -7,14 +7,21 @@ import OnboardManageScreen from "./manage";
 import OnboardFinalScreen from "./final";
 import { useNavigation } from "@react-navigation/native";
 import { completeOnboarding } from "../../helper";
+import { useAuthState } from "../auth/context";
+import { Redirect } from "expo-router";
 
 const OnboardScreen = () => {
+  const { isFirstLaunch, auth } = useAuthState();
+  const router: any = useNavigation();
   const [show, setShow] = useState<{
     show: boolean;
     type?: "welcome" | "highlight" | "book" | "manage" | "final";
   }>({ show: false, type: "welcome" });
 
-  const router: any = useNavigation();
+  if (!isFirstLaunch && auth === null) {
+    return <Redirect href="/auth/login" />;
+  }
+
   return (
     <SafeAreaView>
       {show.type === "welcome" && (
