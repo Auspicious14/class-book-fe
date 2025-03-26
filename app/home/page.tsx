@@ -20,7 +20,7 @@ const HomeScreen = () => {
   useEffect(() => {
     getProfile();
     getHalls(filter);
-    StatusBar.setBarStyle("dark-content");
+    StatusBar.setBarStyle("default");
   }, [filter]);
 
   return (

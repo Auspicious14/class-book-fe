@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   SafeAreaView,
   TextInput,
@@ -14,6 +13,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { IHall } from "./model"; // Adjust path
 import { router, useLocalSearchParams } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
+import { CustomText } from "../../components";
 
 const BookingScreen: React.FC = () => {
   const { hallData } = useLocalSearchParams();
@@ -82,11 +82,11 @@ const BookingScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-secondary">
-      <ScrollView className="px-6 py-4">
-        <Text className="text-center text-xl font-bold text-dark mb-6">
+    <SafeAreaView className="flex-1  bg-secondary">
+      <ScrollView className="px-6 py-4 my-4">
+        <CustomText className="text-center text-xl font-bold text-dark mb-6">
           {`Book ${name} Lecture Hall`}
-        </Text>
+        </CustomText>
 
         <Formik
           initialValues={{
@@ -105,12 +105,12 @@ const BookingScreen: React.FC = () => {
             handleSubmit,
             isSubmitting,
           }) => (
-            <View className="space-y-6">
+            <View className="space-y-6 mt-6">
               {/* Duration */}
               <View>
-                <Text className="text-dark font-semibold mb-1">
+                <CustomText className="text-dark font-semibold mb-1">
                   Duration (hours)
-                </Text>
+                </CustomText>
                 <TextInput
                   keyboardType="numeric"
                   value={values.duration}
@@ -122,61 +122,61 @@ const BookingScreen: React.FC = () => {
 
               {/* Booked From Date */}
               <View>
-                <Text className="text-dark font-semibold mb-1">
+                <CustomText className="text-dark font-semibold mb-1">
                   Booked From Date
-                </Text>
+                </CustomText>
                 <TouchableOpacity
                   onPress={() => showDatePicker("bookedFromDate")}
                   className="bg-white p-3 rounded-xl border border-gray-200"
                 >
-                  <Text className="text-dark">
+                  <CustomText className="text-dark">
                     {values.bookedFromDate.toDateString()}
-                  </Text>
+                  </CustomText>
                 </TouchableOpacity>
               </View>
 
               {/* Booked From Time */}
               <View>
-                <Text className="text-dark font-semibold mb-1">
+                <CustomText className="text-dark font-semibold mb-1">
                   Booked From Time
-                </Text>
+                </CustomText>
                 <TouchableOpacity
                   onPress={() => showDatePicker("bookedFromTime")}
                   className="bg-white p-3 rounded-xl border border-gray-200"
                 >
-                  <Text className="text-dark">
+                  <CustomText className="text-dark">
                     {values.bookedFromTime.toLocaleTimeString()}
-                  </Text>
+                  </CustomText>
                 </TouchableOpacity>
               </View>
 
               {/* Booked To Date */}
               <View>
-                <Text className="text-dark font-semibold mb-1">
+                <CustomText className="text-dark font-semibold mb-1">
                   Booked To Date
-                </Text>
+                </CustomText>
                 <TouchableOpacity
                   onPress={() => showDatePicker("bookedToDate")}
                   className="bg-white p-3 rounded-xl border border-gray-200"
                 >
-                  <Text className="text-dark">
+                  <CustomText className="text-dark">
                     {values.bookedToDate.toDateString()}
-                  </Text>
+                  </CustomText>
                 </TouchableOpacity>
               </View>
 
               {/* Booked To Time */}
               <View>
-                <Text className="text-dark font-semibold mb-1">
+                <CustomText className="text-dark font-semibold mb-1">
                   Booked To Time
-                </Text>
+                </CustomText>
                 <TouchableOpacity
                   onPress={() => showDatePicker("bookedToTime")}
                   className="bg-white p-3 rounded-xl border border-gray-200"
                 >
-                  <Text className="text-dark">
+                  <CustomText className="text-dark">
                     {values.bookedToTime.toLocaleTimeString()}
-                  </Text>
+                  </CustomText>
                 </TouchableOpacity>
               </View>
 
@@ -196,12 +196,14 @@ const BookingScreen: React.FC = () => {
                       color="white"
                       className="mr-2"
                     />
-                    <Text className="text-white font-semibold">
+                    <CustomText className="text-white font-semibold">
                       Processing...
-                    </Text>
+                    </CustomText>
                   </>
                 ) : (
-                  <Text className="text-white font-semibold">Book Hall</Text>
+                  <CustomText className="text-white font-semibold">
+                    Book Hall
+                  </CustomText>
                 )}
               </TouchableOpacity>
 

@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  FlatList,
-  Text,
-  ActivityIndicator,
-  StatusBar,
-} from "react-native";
+import { View, FlatList, ActivityIndicator, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { IHall, IHallQuery } from "./model";
@@ -14,6 +8,7 @@ import { useHallState } from "./context";
 import { HallListItem } from "./components/item";
 import { screenHeight } from "../../constants/utils";
 import { router } from "expo-router";
+import { CustomText } from "../../components";
 
 const HallsScreen = () => {
   const { halls, getHalls, loading } = useHallState();
@@ -99,13 +94,15 @@ const HallsScreen = () => {
         />
       ) : !loading ? (
         <View className="flex-1 justify-center items-center">
-          <Text className="text-dark text-lg font-semibold">
+          <CustomText className="text-dark text-lg font-semibold">
             No halls found
-          </Text>
+          </CustomText>
         </View>
       ) : (
         <View className="flex-1 justify-center items-center">
-          <Text className="text-dark text-lg font-semibold">Loading...</Text>
+          <CustomText className="text-dark text-lg font-semibold">
+            Loading...
+          </CustomText>
         </View>
       )}
     </SafeAreaView>

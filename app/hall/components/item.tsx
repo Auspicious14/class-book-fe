@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { TouchableOpacity, View, Image, Dimensions, Text } from "react-native";
+import { TouchableOpacity, View, Image, Dimensions } from "react-native";
 import { IHall } from "../model";
 import { useNavigation } from "@react-navigation/native";
 import { Link, useRouter } from "expo-router";
 import { fetchToken } from "../../../helper";
+import { CustomText } from "../../../components";
 
 interface IProps {
   hall: IHall;
@@ -48,20 +49,22 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
         </View>
 
         <View className="flex-1 mt-2">
-          <Text className="text-lg text-dark font-semibold">{hall?.name}</Text>
-          <Text className="text-gray-500 text-sm mt-1" numberOfLines={1}>
+          <CustomText className="text-lg text-dark font-semibold">
+            {hall?.name}
+          </CustomText>
+          <CustomText className="text-gray-500 text-sm mt-1" numberOfLines={1}>
             {hall?.location}
-          </Text>
-          <Text className="text-dark text-sm mt-1">
+          </CustomText>
+          <CustomText className="text-dark text-sm mt-1">
             {hall?.capacity} students
-          </Text>
-          <Text
+          </CustomText>
+          <CustomText
             className={`${
               hall?.available ? "text-primary" : "text-accent"
             } font-medium mt-1`}
           >
             {hall.available ? "Available" : "Booked"}
-          </Text>
+          </CustomText>
         </View>
 
         {/* Button Section */}
@@ -80,7 +83,11 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
               asChild
             >
               <TouchableOpacity className="bg-primary py-2 rounded-md items-center">
-                <Text className="text-white font-semibold">Book Now</Text>
+                <CustomText className="text-white font-semibold">
+                  {hall.available && role === "admin"
+                    ? "Update Hall"
+                    : " Book Now"}
+                </CustomText>
               </TouchableOpacity>
             </Link>
           ) : (
@@ -101,11 +108,11 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
                 } py-2 rounded-md items-center`}
                 disabled={role === "admin" && !hall.available}
               >
-                <Text className="text-white font-semibold">
+                <CustomText className="text-white font-semibold">
                   {!hall.available && role === "admin"
                     ? "Already Booked"
                     : "Detail"}
-                </Text>
+                </CustomText>
               </TouchableOpacity>
             </Link>
           )}

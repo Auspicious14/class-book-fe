@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   Image,
   SafeAreaView,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -12,6 +11,7 @@ import { useHallState } from "./context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { screenWidth } from "../../constants/utils";
 import { IHall } from "./model";
+import { CustomText } from "../../components";
 
 export const HallDetailScreen = () => {
   const { hallData } = useLocalSearchParams();
@@ -30,16 +30,22 @@ export const HallDetailScreen = () => {
         />
       </View>
       <View className="my-8 relative">
-        <Text className="font-bold text-2xl text-dark">{item?.name}</Text>
-        <Text className="text-base text-dark">{item?.description}</Text>
-        <Text className="text-base text-dark">{item?.capacity} students</Text>
-        <Text
+        <CustomText className="font-bold text-2xl text-dark">
+          {item?.name}
+        </CustomText>
+        <CustomText className="text-base text-dark">
+          {item?.description}
+        </CustomText>
+        <CustomText className="text-base text-dark">
+          {item?.capacity} students
+        </CustomText>
+        <CustomText
           className={`text-base ${
             item?.available ? "text-primary" : "text-accent"
           }`}
         >
           {item?.available ? "Available" : "Booked"}
-        </Text>
+        </CustomText>
         <View className="p-3">
           {item?.available && (
             <Link
@@ -52,7 +58,7 @@ export const HallDetailScreen = () => {
               asChild
               className="bg-primary py-2 rounded-md items-center"
             >
-              <Text className="text-white font-bold">Book Now</Text>
+              <CustomText className="text-white font-bold">Book Now</CustomText>
             </Link>
           )}
         </View>

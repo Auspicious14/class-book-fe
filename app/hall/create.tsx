@@ -4,7 +4,6 @@ import {
   Image,
   ScrollView,
   StatusBar,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -19,6 +18,7 @@ import * as ImageManipulator from "expo-image-manipulator";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { router, useLocalSearchParams } from "expo-router";
 import { IHall } from "./model";
+import { CustomText } from "../../components";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required("Hall Name is required"),
@@ -111,11 +111,11 @@ const CreateHallScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-secondary">
       <ScrollView className="px-6 py-4">
-        <Text className="text-center text-xl font-bold text-dark mb-6">
+        <CustomText className="text-center text-xl font-bold text-dark mb-6">
           {hall._id
             ? `Update ${hall.name} Lecture Hall`
             : "Create a Lecture Hall"}
-        </Text>
+        </CustomText>
 
         <Formik
           initialValues={{
@@ -136,7 +136,7 @@ const CreateHallScreen = () => {
             errors,
             isSubmitting,
           }) => (
-            <View className="space-y-6">
+            <View className="space-y-6 mt-6">
               {/* Image Upload */}
               <View className="items-center">
                 {!image ? (
@@ -145,9 +145,9 @@ const CreateHallScreen = () => {
                     onPress={pickImage}
                   >
                     <AntDesign name="plus" size={40} color="#6b7280" />
-                    <Text className="text-dark font-semibold mt-2">
+                    <CustomText className="text-dark font-semibold mt-2">
                       Upload Image
-                    </Text>
+                    </CustomText>
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity onPress={pickImage}>
@@ -162,7 +162,9 @@ const CreateHallScreen = () => {
 
               {/* Form Fields */}
               <View>
-                <Text className="text-dark font-semibold mb-1">Name</Text>
+                <CustomText className="text-dark font-semibold mb-1">
+                  Name
+                </CustomText>
                 <TextInput
                   className="bg-white p-3 rounded-xl border border-gray-200 text-dark"
                   placeholder="Hall Name"
@@ -171,16 +173,16 @@ const CreateHallScreen = () => {
                   onChangeText={handleChange("name")}
                 />
                 {errors.name && (
-                  <Text className="text-red-500 text-sm mt-1">
+                  <CustomText className="text-red-500 text-sm mt-1">
                     {errors.name}
-                  </Text>
+                  </CustomText>
                 )}
               </View>
 
               <View>
-                <Text className="text-dark font-semibold mb-1">
+                <CustomText className="text-dark font-semibold mb-1">
                   Description
-                </Text>
+                </CustomText>
                 <TextInput
                   className="bg-white p-3 rounded-xl border border-gray-200 text-dark h-24"
                   placeholder="Description"
@@ -190,14 +192,16 @@ const CreateHallScreen = () => {
                   multiline
                 />
                 {errors.description && (
-                  <Text className="text-red-500 text-sm mt-1">
+                  <CustomText className="text-red-500 text-sm mt-1">
                     {errors.description}
-                  </Text>
+                  </CustomText>
                 )}
               </View>
 
               <View>
-                <Text className="text-dark font-semibold mb-1">Capacity</Text>
+                <CustomText className="text-dark font-semibold mb-1">
+                  Capacity
+                </CustomText>
                 <TextInput
                   className="bg-white p-3 rounded-xl border border-gray-200 text-dark"
                   placeholder="Capacity"
@@ -207,14 +211,16 @@ const CreateHallScreen = () => {
                   keyboardType="numeric"
                 />
                 {errors.capacity && (
-                  <Text className="text-red-500 text-sm mt-1">
+                  <CustomText className="text-red-500 text-sm mt-1">
                     {errors.capacity}
-                  </Text>
+                  </CustomText>
                 )}
               </View>
 
               <View>
-                <Text className="text-dark font-semibold mb-1">Location</Text>
+                <CustomText className="text-dark font-semibold mb-1">
+                  Location
+                </CustomText>
                 <TextInput
                   className="bg-white p-3 rounded-xl border border-gray-200 text-dark"
                   placeholder="Location"
@@ -223,9 +229,9 @@ const CreateHallScreen = () => {
                   onChangeText={handleChange("location")}
                 />
                 {errors.location && (
-                  <Text className="text-red-500 text-sm mt-1">
+                  <CustomText className="text-red-500 text-sm mt-1">
                     {errors.location}
-                  </Text>
+                  </CustomText>
                 )}
               </View>
 
@@ -245,14 +251,14 @@ const CreateHallScreen = () => {
                       color="white"
                       className="mr-2"
                     />
-                    <Text className="text-white font-semibold">
+                    <CustomText className="text-white font-semibold">
                       Processing...
-                    </Text>
+                    </CustomText>
                   </>
                 ) : (
-                  <Text className="text-white font-semibold">
+                  <CustomText className="text-white font-semibold">
                     {hall._id ? "Update Hall" : "Create Hall"}
-                  </Text>
+                  </CustomText>
                 )}
               </TouchableOpacity>
             </View>

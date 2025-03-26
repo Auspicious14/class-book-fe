@@ -13,8 +13,10 @@ export default function AdminLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Dashboard",
           headerShown: false,
+          tabBarLabel: "Dashboard",
+          tabBarHideOnKeyboard: true,
+          tabBarAllowFontScaling: true,
           tabBarIcon: () => (
             <Ionicons name="home" size={24} color={"#4CAF50"} />
           ),
@@ -24,7 +26,7 @@ export default function AdminLayout() {
         name="hall"
         options={{
           headerShown: false,
-          headerTitle: "",
+          headerTitle: "Halls",
           tabBarIcon: () => (
             <Ionicons name="list" size={24} color={"#4CAF50"} />
           ),
@@ -35,7 +37,7 @@ export default function AdminLayout() {
         initialParams={{ item: {} }}
         options={{
           headerShown: false,
-          headerTitle: "",
+          headerTitle: "Create",
           tabBarIcon: () => (
             <Ionicons name="add-circle" size={24} color={"#4CAF50"} />
           ),
@@ -45,7 +47,7 @@ export default function AdminLayout() {
         name="profile"
         options={{
           headerShown: false,
-          headerTitle: "",
+          headerTitle: "Profile",
           tabBarIcon: () => (
             <Ionicons name="person" size={24} color={"#4CAF50"} />
           ),

@@ -9,7 +9,7 @@ export const CustomText: React.FC<TextProps> = ({
   return (
     <Text
       style={[{ fontFamily: "FiraCode" }, style]}
-      className={`font-sans ${className}`}
+      className={`font-fira-code ${className}`}
       {...props}
     />
   );
