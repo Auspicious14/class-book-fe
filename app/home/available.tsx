@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, TouchableOpacity, View, Text, Image } from "react-native";
 import { IHall } from "../hall/model";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { fetchToken } from "../../helper";
 import { useNavigation } from "@react-navigation/native";
 
@@ -21,14 +21,12 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
     authStatus();
   }, []);
 
-  console.log(role, "rrolee");
-
   return (
     <View>
       <Text className="font-bold text-dark text-lg">
         Available Halls for you
       </Text>
-      {!loading && halls.length > 0 && (
+      {!loading && halls?.length > 0 && (
         <View className="py-4">
           <FlatList
             data={halls}
@@ -38,19 +36,9 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
             contentContainerStyle={{ paddingHorizontal: 10 }}
             renderItem={({ item }) => (
               <View className="mr-4 w-64">
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate(
-                      role === "admin"
-                        ? "CreateHall"
-                        : role === "student"
-                        ? "HallDetail"
-                        : "",
-                      { item }
-                    )
-                  }
-                  className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72"
-                >
+                {/* Card Container */}
+                <View className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72">
+                  {/* Image Section */}
                   <View className="relative w-full h-32">
                     <Image
                       source={{
@@ -63,14 +51,10 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
                     />
                   </View>
 
+                  {/* Text Section */}
                   <View className="p-3 flex-1">
                     <View className="flex flex-row justify-between items-center">
-                      <Text
-                        className="te
-                      
-                      
-                      xt-lg text-dark font-bold"
-                      >
+                      <Text className="text-lg text-dark font-bold">
                         {item?.name}
                       </Text>
                       <Text
@@ -87,18 +71,26 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
                     <Text className="text-dark">{item.capacity} students</Text>
                   </View>
 
+                  {/* Button Section */}
                   <View className="p-3">
-                    {
+                    <Link
+                      href={{
+                        pathname:
+                          item.available && role !== "student"
+                            ? "/hall/booking"
+                            : "/hall/detail",
+                        params: {
+                          hallData: JSON.stringify(item),
+                        },
+                      }}
+                      asChild
+                    >
                       <TouchableOpacity
-                        className="bg-primary py-2 rounded-md items-center"
-                        onPress={() =>
-                          navigation.navigate(
-                            item.available && role !== "student"
-                              ? "BookHall"
-                              : "HallDetail",
-                            { item }
-                          )
-                        }
+                        className={`${
+                          item.available && role !== "student"
+                            ? "bg-primary"
+                            : "bg-accent opacity-70"
+                        } py-2 rounded-md items-center`}
                       >
                         <Text className="text-white font-bold">
                           {item.available && role !== "student"
@@ -106,9 +98,9 @@ const AvailableHalls: React.FC<IProps> = ({ loading, halls }) => {
                             : "Detail"}
                         </Text>
                       </TouchableOpacity>
-                    }
+                    </Link>
                   </View>
-                </TouchableOpacity>
+                </View>
               </View>
             )}
           />

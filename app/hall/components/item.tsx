@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View, Image, Dimensions, Text } from "react-native";
 import { IHall } from "../model";
 import { useNavigation } from "@react-navigation/native";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { fetchToken } from "../../../helper";
 
 interface IProps {
@@ -28,15 +28,9 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
 
   return (
     <View className="w-1/2 p-2">
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate(
-            hall.available && role === "admin" ? "CreateHall" : "HallDetail",
-            { item: hall }
-          )
-        }
-        className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72"
-      >
+      {/* Outer card container */}
+      <View className="bg-white flex flex-col justify-between rounded-md shadow-sm border border-gray-300 h-72">
+        {/* Image Section */}
         <View className="relative w-full h-32">
           <Image
             source={{
@@ -49,6 +43,7 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
           />
         </View>
 
+        {/* Text Section */}
         <View className="p-3 flex-1">
           <Text className="text-lg text-dark font-bold">{hall?.name}</Text>
           <Text className="text-dark" numberOfLines={1}>
@@ -62,37 +57,52 @@ export const HallListItem: React.FC<IProps> = ({ hall, onPress }) => {
           </Text>
         </View>
 
+        {/* Button Section */}
         <View className="p-3">
           {hall.available ||
           (lastBooking &&
             lastBooking.bookedTo &&
             new Date(lastBooking.bookedTo) < date) ? (
-            <TouchableOpacity
-              className="bg-primary py-2 rounded-md items-center"
-              onPress={() =>
-                navigation.navigate(
+            <Link
+              href={{
+                pathname:
                   hall.available && role === "admin"
-                    ? "BookHall"
-                    : "HallDetail",
-                  {
-                    item: hall,
-                  }
-                )
-              }
+                    ? "/hall/create"
+                    : "/hall/detail",
+                params: {
+                  hallData: JSON.stringify(hall),
+                },
+              }}
+              asChild // Allows wrapping with TouchableOpacity
             >
-              <Text className="text-white font-bold">Book Now</Text>
-            </TouchableOpacity>
+              <TouchableOpacity className="bg-primary py-2 rounded-md items-center">
+                <Text className="text-white font-bold">Book Now</Text>
+              </TouchableOpacity>
+            </Link>
           ) : (
-            <TouchableOpacity className="bg-accent opacity-70 py-2 rounded-md items-center">
-              <Text className="text-white font-bold">
-                {!hall.available && role === "admin"
-                  ? "Already Booked"
-                  : "Detail"}
-              </Text>
-            </TouchableOpacity>
+            <Link
+              href={{
+                pathname: "/hall/detail",
+                params: {
+                  hallData: JSON.stringify(hall),
+                },
+              }}
+              asChild
+            >
+              <TouchableOpacity
+                className="bg-accent opacity-70 py-2 rounded-md items-center"
+                disabled={role === "admin" && !hall.available}
+              >
+                <Text className="text-white font-bold">
+                  {!hall.available && role === "admin"
+                    ? "Already Booked"
+                    : "Detail"}
+                </Text>
+              </TouchableOpacity>
+            </Link>
           )}
         </View>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 };

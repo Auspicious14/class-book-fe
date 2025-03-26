@@ -15,11 +15,12 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { IHall } from "./model";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Toast from "react-native-root-toast";
+import { router, useLocalSearchParams } from "expo-router";
 
 const BookingScreen: React.FC = () => {
   const route = useRoute();
-  const navigation: any = useNavigation();
-  const { item }: any = route?.params;
+  const { hallData } = useLocalSearchParams();
+  const item: IHall = hallData ? JSON.parse(hallData as string) : null;
   const { _id = "", name = "" }: any = item;
   const { bookHall, loading } = useHallState();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -83,7 +84,7 @@ const BookingScreen: React.FC = () => {
       duration,
     }).then((res) => {
       if (res) {
-        navigation.navigate("HallPage");
+        router.replace("/hall");
       }
     });
   };

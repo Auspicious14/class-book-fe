@@ -16,6 +16,8 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { router, useLocalSearchParams } from "expo-router";
+import { IHall } from "./model";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required("Hall Name is required"),
@@ -25,9 +27,8 @@ const FormSchema = Yup.object().shape({
 });
 
 const CreateHallScreen = () => {
-  const route = useRoute();
-  const navigation: any = useNavigation();
-  const { item }: any = route.params;
+  const { hallData } = useLocalSearchParams();
+  const item: IHall = hallData ? JSON.parse(hallData as string) : null;
 
   const {
     _id = "",
@@ -87,7 +88,7 @@ const CreateHallScreen = () => {
     saveHall({ _id, available, ...val }, _id ? images[0] : image).then(
       (res) => {
         if (res) {
-          navigation.nvigate("HallPage");
+          router.replace("/hall");
         }
       }
     );

@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,
@@ -11,11 +11,11 @@ import {
 import { useHallState } from "./context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { screenWidth } from "../../constants/utils";
+import { IHall } from "./model";
 
 export const HallDetailScreen = () => {
-  const route = useRoute();
-  const navigation: any = useNavigation();
-  const { item }: any = route?.params;
+  const { hallData } = useLocalSearchParams();
+  const item: IHall = hallData ? JSON.parse(hallData as string) : null;
 
   return (
     <SafeAreaView className="px-4 ">
@@ -42,12 +42,18 @@ export const HallDetailScreen = () => {
         </Text>
         <View className="p-3">
           {item?.available && (
-            <TouchableOpacity
+            <Link
+              href={{
+                pathname: "/hall/booking",
+                params: {
+                  item: JSON.stringify(item),
+                } as Record<string, string>,
+              }}
+              asChild
               className="bg-primary py-2 rounded-md items-center"
-              onPress={() => navigation.navigate("BookHall", { item })}
             >
               <Text className="text-white font-bold">Book Now</Text>
-            </TouchableOpacity>
+            </Link>
           )}
         </View>
       </View>

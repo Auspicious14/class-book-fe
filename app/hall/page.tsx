@@ -15,6 +15,7 @@ import { SearchBar } from "@rneui/themed";
 import { useHallState } from "./context";
 import { HallListItem } from "./components/item";
 import { screenHeight } from "../../constants/utils";
+import { router } from "expo-router";
 
 const numColumns = 2;
 
@@ -38,7 +39,10 @@ const HallsScreen = () => {
     );
   }
   const navigateToCreateHall = (item?: IHall) => {
-    navigation.navigate("hall/create", item ? { item } : null);
+    router.replace({
+      pathname: "hall/create",
+      params: item ? JSON.stringify(item) : (undefined as any),
+    });
   };
 
   return (
