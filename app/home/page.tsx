@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, TouchableOpacity, StatusBar } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, Redirect, useNavigation } from "expo-router";
+import { View, Image, TouchableOpacity } from "react-native";
+import { Link } from "expo-router";
 import { useHallState } from "../hall/context";
 import { IHallQuery } from "../hall/model";
 import { useProfileState } from "../profile/context";
 import AvailableHalls from "./available";
 import HeroCarousel from "./hero";
-import { useAuthState } from "../auth/context";
 import { ProtectedRoute } from "../../hooks/protectedRoute";
 import { CustomText } from "../../components";
 
 const HomeScreen = () => {
-  const navigation: any = useNavigation();
   const { getProfile, profile } = useProfileState();
   const { getHalls, halls, loading } = useHallState();
   const [filter, setFilter] = useState<IHallQuery>({ available: true });
@@ -20,7 +17,6 @@ const HomeScreen = () => {
   useEffect(() => {
     getProfile();
     getHalls(filter);
-    StatusBar.setBarStyle("default");
   }, [filter]);
 
   return (

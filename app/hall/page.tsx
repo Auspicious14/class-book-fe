@@ -67,7 +67,6 @@ const HallsScreen = () => {
         colors={["#4CAF50", "#6b7280"]}
         className="pt-12 pb-6 px-4 h-40"
       >
-        {/* Search Bar */}
         <View className="flex-row items-center bg-white rounded-xl border border-gray-200 shadow-sm">
           <Feather name="search" size={20} color="#6b7280" className="ml-3" />
           <TextInput
@@ -89,7 +88,6 @@ const HallsScreen = () => {
         </View>
       </LinearGradient>
 
-      {/* Hall List */}
       <View className="flex-1 px-4 -mt-4">
         {!loading && filteredHalls?.length > 0 ? (
           <FlatList

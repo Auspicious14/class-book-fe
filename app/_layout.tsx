@@ -93,7 +93,7 @@
 // };
 
 import { Stack } from "expo-router";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, StatusBar } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import * as Notifications from "expo-notifications";
@@ -195,10 +195,11 @@ export default function RootLayout() {
       />
     );
   }
-  console.log({ fontsLoaded });
+
   return (
     <>
       <AppContextProvider>
+        <StatusBar barStyle="dark-content" backgroundColor="#4CAF50" />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="onboarding/index" />
           <Stack.Screen name="auth/login" />
